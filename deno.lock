@@ -2,7 +2,13 @@
   "version": "3",
   "packages": {
     "specifiers": {
+      "jsr:@std/dotenv": "jsr:@std/dotenv@0.225.1",
       "npm:@sqlitecloud/drivers": "npm:@sqlitecloud/drivers@1.0.193"
+    },
+    "jsr": {
+      "@std/dotenv@0.225.1": {
+        "integrity": "138f31352843d76cfb6cda1b860e8aac6d02ce3b05e7e236a81bf285a9868d0c"
+      }
     },
     "npm": {
       "@socket.io/component-emitter@3.1.2": {

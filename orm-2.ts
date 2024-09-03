@@ -1,4 +1,7 @@
 import { Database } from 'npm:@sqlitecloud/drivers'
+import "jsr:@std/dotenv/load";
+
+
 
 class Model {
   static database: Database;
@@ -76,7 +79,8 @@ class Customer extends Model {
 }
 
 async function main() {
-  await Model.initialize('sqlitecloud://admin2:test1234@nstjifolsk.sqlite.cloud:8860/deno.sqlite');
+  const connectionString = Deno.env.get("SQLITECLOUD_URL")
+  await Model.initialize(connectionString);
 
   await Customer.createTable({
     id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
