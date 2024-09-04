@@ -1,15 +1,15 @@
 import { Database } from 'npm:@sqlitecloud/drivers'
 import { Input } from "https://deno.land/x/cliffy@v1.0.0-rc.4/prompt/mod.ts";
+import "jsr:@std/dotenv/load";
 
 
 
-
-
+const connectionString = Deno.env.get("SQLITECLOUD_URL")
 
 
 //to run on deno type  > deno run -A dbtest.ts
 
-let database = new Database(`sqlitecloud://admin2:test1234@nstjifolsk.sqlite.cloud:8860/deno.sqlite`);
+let database = new Database(connectionString);
 
 // Function to list all tables in the database
 async function listAllTables() {

@@ -78,28 +78,28 @@ export class Customer extends Model {
   static tableName = 'customers9';
 }
 
-async function main() {
-  const connectionString = Deno.env.get("SQLITECLOUD_URL")
-  await Model.initialize(connectionString);
+// async function main() {
+//   const connectionString = Deno.env.get("SQLITECLOUD_URL")
+//   await Model.initialize(connectionString);
 
-  await Customer.createTable({
-    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
-    username: 'TEXT NOT NULL UNIQUE',
-    email: 'TEXT NOT NULL UNIQUE'
-  });
+//   await Customer.createTable({
+//     id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+//     username: 'TEXT NOT NULL UNIQUE',
+//     email: 'TEXT NOT NULL UNIQUE'
+//   });
 
-  await Customer.insert({
-    username: 'johndoe99',
-    email: 'johndoe@example99.com'
-  });
+//   await Customer.insert({
+//     username: 'johndoe99',
+//     email: 'johndoe@example99.com'
+//   });
 
-  const johnDoe = await Customer.findBy({ username: 'johndoe' });
-  console.log('Found user:', johnDoe);
+//   const johnDoe = await Customer.findBy({ username: 'johndoe' });
+//   console.log('Found user:', johnDoe);
 
-  const allCustomers = await Customer.findAll();
-  console.log('All customers:', allCustomers);
+//   const allCustomers = await Customer.findAll();
+//   console.log('All customers:', allCustomers);
 
-  Model.database.close();
-}
+//   Model.database.close();
+// }
 
-await main();
+// await main();
