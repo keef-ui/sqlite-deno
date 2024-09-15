@@ -2,12 +2,13 @@ import { Database } from 'npm:@sqlitecloud/drivers'
 import "jsr:@std/dotenv/load";
 
 
-
 export class Model {
   static database: Database;
   static tableName: string;
 
+  
   static async initialize(connectionString: string) {
+  
     this.database = new Database(connectionString);
   }
 
@@ -75,8 +76,13 @@ export class Model {
 }
 
 export class Customer extends Model {
-  static tableName = 'customers9';
+  static tableName = 'customers123';
 }
+
+export class Order extends Model {
+  static tableName = 'orders';
+}
+
 
 async function main() {
   const connectionString = Deno.env.get("SQLITECLOUD_URL")
@@ -88,13 +94,24 @@ async function main() {
     email: 'TEXT NOT NULL UNIQUE'
   });
 
-  await Customer.insert({
-    username: 'johndoe99',
-    email: 'johndoe@example99.com'
+  await Order.createTable({
+    id: 'INTEGER PRIMARY KEY AUTOINCREMENT',
+    username: 'TEXT NOT NULL ',
+    ordernumber: 'NUM NOT NULL UNIQUE'
   });
 
-  const johnDoe = await Customer.findBy({ username: 'johndoe' });
-  console.log('Found user:', johnDoe);
+  await Customer.insert({
+    username: 'johndoe12345gg',
+    email: 'johndoe@example12345x.com'
+  });
+
+
+  await Order.insert({
+    username: 'johndoe12345gg',
+    ordernumber: 123
+  });
+  // const johnDoe = await Customer.findBy({ username: 'johndoe' });
+  // console.log('Found user:', johnDoe);
 
   const allCustomers = await Customer.findAll();
   console.log('All customers:', allCustomers);
