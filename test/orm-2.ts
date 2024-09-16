@@ -75,7 +75,7 @@ export class Model {
 }
 
 export class Customer extends Model {
-  static tableName = 'customers9';
+  static tableName = 'customerstest';
 }
 
 // async function main() {

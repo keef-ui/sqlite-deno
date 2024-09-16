@@ -10,7 +10,7 @@ await client.connectTLS({
   });
   
   await client.send({
-    from: "elearningzone@googlemail.com", // Your Email address
+    from: "exxxxzone@googlemail.com", // Your Email address
     to: "keef-vp@hotmail.com", // Email address of the destination
     subject: "Mail Title",
     content: "Mail Content，maybe HTML",
