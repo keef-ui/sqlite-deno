@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular Map Location Picker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <style>
+        #map { height: 400px; width: 100%; }
+        form { margin-top: 20px; }
+        input, button { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <form id="incidentForm">
+        <label for="latitude">Latitude:</label>
+        <input type="text" id="latitude" name="latitude" readonly>
+        <label for="longitude">Longitude:</label>
+        <input type="text" id="longitude" name="longitude" readonly>
+        <input type="file" id="imageInput" accept="image/*" required>
+        <br>
+        <img id="imagePreview" src="" alt="Image preview" style="display: none;">
+        <br>
+        <button type="submit" id="saveButton" disabled>Save Location</button>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <script src="scripts/locationPicker.js"></script>
+    <script src="scripts/cloudinaryUpload.js"></script>
+    <script>
+        const $=document.querySelector
+        const cloudName = 'YOUR_CLOUD_NAME';
+        const uploadPreset = 'YOUR_UPLOAD_PRESET';
+
+        const imageInput = document.getElementById('imageInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const uploadForm = document.getElementById('incidentForm');
+        const uploadButton = document.getElementById('uploadButton');
+        const uploadResult = document.getElementById('uploadResult');
+    // Initialize the LocationPicker
+    LocationPicker.init();
+    //Pick image and display
+    imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'inline-block';
+                    // uploadButton.disabled = false;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    async function saveToDatabase(lat, lng) {
+        try {
+      // Save to database
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while saving the location');
+        }
+    }
+
+//TODO: add image upload to codinary
+
+uploadForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const file = imageInput.files[0];
+          console.log(uploadForm)
+        uploadToServer(uploadForm);
+          
+
+        });
+
+        function uploadToServer(uploadForm) {
+            const formData = new FormData(uploadForm);
+            console.log(formData)
+
+            fetch('/incident', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Upload successful:', data);
+                    uploadResult.innerHTML = `
+                        <p>Upload successful!</p>
+                        <img src="${data.url}" alt="Uploaded image" style="max-width: 300px;" />
+                    `;
+                } else {
+                    throw new Error(data.message || 'Upload failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                uploadResult.innerHTML = `<p>Upload failed: ${error.message}</p>`;
+            });
+        }
+    </script>
+</body>
+</html>
