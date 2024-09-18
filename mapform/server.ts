@@ -1,5 +1,5 @@
 // server.ts
-import { Application, Router } from "https://deno.land/x/oak@v10.6.0/mod.ts";
+import { Application, Router } from "https://deno.land/x/oak@v17.0.0/mod.ts";
 import { multiParser } from "https://deno.land/x/multiparser@0.114.0/mod.ts";
 
 const app = new Application();
@@ -41,8 +41,10 @@ const CLOUDINARY_API_SECRET = "YOUR_API_SECRET";
 
 //form upload
 router.post("/incident", async (context) => {
-    const body = await multiParser(context.request.serverRequest);
-    const file = body.files.image;
+    const body = await context.request.body.formData();
+    // const file = body.files.image;
+
+    console.log(body)
     
     // if (!file) {
     //   context.response.status = 400;
@@ -80,6 +82,15 @@ router.post("/incident", async (context) => {
       context.response.body = { success: false, message: "Server error" };
     }
   });
+
+  
+  router.post('/quote', async context => {
+    const body = await context.request.body.formData()
+
+      console.log(body)
+    
+    })
+
 
 app.use(router.routes());
 app.use(router.allowedMethods());

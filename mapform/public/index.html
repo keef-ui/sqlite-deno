@@ -13,17 +13,29 @@
 </head>
 <body>
     <div id="map"></div>
-    <form id="incidentForm">
+    <form id="incidentForm" enctype="multipart/form-data" name="incidentForm">
         <label for="latitude">Latitude:</label>
         <input type="text" id="latitude" name="latitude" readonly>
         <label for="longitude">Longitude:</label>
         <input type="text" id="longitude" name="longitude" readonly>
-        <input type="file" id="imageInput" accept="image/*" required>
+        <input type="file" id="imageInput" name="imageInput" accept="image/*" required>
         <br>
         <img id="imagePreview" src="" alt="Image preview" style="display: none;">
         <br>
         <button type="submit" id="saveButton" disabled>Save Location</button>
     </form>
+
+    <form method="post" action="/quote" enctype="multipart/form-data">
+      <label>Author:
+      <input type="text" name="author" />
+      </label>
+      <label>file: <input type="file" name="myfile" multiple />
+      </label>
+      <label>Quote: 
+      <textarea name="quote"></textarea>
+      </label>
+      <input type="submit" />
+      </form>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
     <script src="scripts/locationPicker.js"></script>
@@ -67,15 +79,15 @@
 uploadForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const file = imageInput.files[0];
-          console.log(uploadForm)
-        uploadToServer(uploadForm);
+            const formData = new FormData(uploadForm);
+        uploadToServer(formData);
           
 
         });
 
-        function uploadToServer(uploadForm) {
-            const formData = new FormData(uploadForm);
-            console.log(formData)
+        function uploadToServer(formData) {
+            
+            console.log(formData.get('latitude'))
 
             fetch('/incident', {
                 method: 'POST',
@@ -98,6 +110,20 @@ uploadForm.addEventListener('submit', async function(e) {
                 uploadResult.innerHTML = `<p>Upload failed: ${error.message}</p>`;
             });
         }
+
+        const form = document.querySelector("#fileinfo");
+
+form.addEventListener("submit", async (event) => {
+  const formData = new FormData(form);
+
+  formData.append("CustomField", "This is some extra data");
+
+  const response = await fetch("stash.php", {
+    method: "POST",
+    body: formData,
+  });
+  event.preventDefault();
+});
     </script>
 </body>
 </html>
