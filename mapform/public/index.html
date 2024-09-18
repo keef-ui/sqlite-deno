@@ -25,29 +25,15 @@
         <button type="submit" id="saveButton" disabled>Save Location</button>
     </form>
 
-    <form method="post" action="/quote" enctype="multipart/form-data">
-      <label>Author:
-      <input type="text" name="author" />
-      </label>
-      <label>file: <input type="file" name="myfile" multiple />
-      </label>
-      <label>Quote: 
-      <textarea name="quote"></textarea>
-      </label>
-      <input type="submit" />
-      </form>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
     <script src="scripts/locationPicker.js"></script>
-    <script src="scripts/cloudinaryUpload.js"></script>
+
     <script>
         const $=document.querySelector
-        const cloudName = 'YOUR_CLOUD_NAME';
-        const uploadPreset = 'YOUR_UPLOAD_PRESET';
 
         const imageInput = document.getElementById('imageInput');
         const imagePreview = document.getElementById('imagePreview');
-        const uploadForm = document.getElementById('incidentForm');
+        const incidentForm = document.getElementById('incidentForm');
         const uploadButton = document.getElementById('uploadButton');
         const uploadResult = document.getElementById('uploadResult');
     // Initialize the LocationPicker
@@ -76,10 +62,10 @@
 
 //TODO: add image upload to codinary
 
-uploadForm.addEventListener('submit', async function(e) {
+incidentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const file = imageInput.files[0];
-            const formData = new FormData(uploadForm);
+            const formData = new FormData(incidentForm);
         uploadToServer(formData);
           
 
@@ -113,17 +99,6 @@ uploadForm.addEventListener('submit', async function(e) {
 
         const form = document.querySelector("#fileinfo");
 
-form.addEventListener("submit", async (event) => {
-  const formData = new FormData(form);
-
-  formData.append("CustomField", "This is some extra data");
-
-  const response = await fetch("stash.php", {
-    method: "POST",
-    body: formData,
-  });
-  event.preventDefault();
-});
     </script>
 </body>
 </html>

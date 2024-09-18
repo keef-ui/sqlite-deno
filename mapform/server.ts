@@ -1,6 +1,6 @@
 // server.ts
 import { Application, Router } from "https://deno.land/x/oak@v17.0.0/mod.ts";
-import { multiParser } from "https://deno.land/x/multiparser@0.114.0/mod.ts";
+
 
 const app = new Application();
 const router = new Router();
@@ -42,21 +42,43 @@ const CLOUDINARY_API_SECRET = "YOUR_API_SECRET";
 //form upload
 router.post("/incident", async (context) => {
     const body = await context.request.body.formData();
+    const file = await context.request;
     // const file = body.files.image;
+const test = body.get('imageInput') as File
 
-    console.log(body)
+
+    console.log(body.get('imageInput'))
+    console.log(test.name)
     
+
+    const contentx =await body.get('imageInput').text()
+
+   
+    console.log(contentx)
     // if (!file) {
     //   context.response.status = 400;
     //   context.response.body = { success: false, message: "No file uploaded" };
     //   return;
     // }
   
+
+    // const reader = await Deno.open(test.name, { read: true });
+    // const content = await Deno.readAll(reader);
+    // Deno.close(reader.rid);
+    await Deno.mkdir("uploadsxx", { recursive: true });
+    await Deno.writeFile(`./uploadsxx/${file.name}`, contentx);
+
+
+
+
+
+
+    //---------------------------------------------------------------------
     try {
       const formData = new FormData();
       formData.append("file", new Blob([file.content]), file.filename);
       formData.append("upload_preset", "YOUR_UPLOAD_PRESET");
-  console.log("Yessss...........")
+  console.log("xxxxYessss...........")
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`,
         {
@@ -82,14 +104,6 @@ router.post("/incident", async (context) => {
       context.response.body = { success: false, message: "Server error" };
     }
   });
-
-  
-  router.post('/quote', async context => {
-    const body = await context.request.body.formData()
-
-      console.log(body)
-    
-    })
 
 
 app.use(router.routes());
