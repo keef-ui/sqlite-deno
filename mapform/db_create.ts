@@ -1,10 +1,12 @@
-import { Database } from 'npm:@sqlitecloud/drivers'
 import "jsr:@std/dotenv/load";
-import { Model } from '../db/orm-2.ts';
+import { Model } from '../db/orm.ts';
+
+
 
 async function main() {
-  const connectionString = Deno.env.get("SQLITECLOUD_URL_INCIDENT")
-  await Model.initialize("sqlitecloud://admin2:test1234@nstjifolsk.sqlite.cloud:8860/incident-reporting.sqlite");
+
+const connectionString:string =   Deno.env.get("SQLITECLOUD_URL_INCIDENT")!
+  await Model.initialize(connectionString);
 
  class Incident extends Model {
     static tableName = 'incident';
@@ -25,11 +27,11 @@ async function main() {
 
 
   await Incident.insert({
-    email: 'johndoe12345gg',
-    description: 'Test description',
-    latitude: 123,
-    longitude: 123,
-    image: 'test image'
+    email: 'johndoetest23@ex.com',
+    description: '999-Test description',
+    latitude: 333,
+    longitude: 333,
+    image: 'test imagxxxe'
 
   });
 
