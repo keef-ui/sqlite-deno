@@ -44,6 +44,10 @@
         background: black;
         color: white;
       }
+      #address::placeholder {
+  color: yellow;
+  opacity: 1; /* Firefox */
+}
       label {
           padding-top: var(--padding);
       }
@@ -53,7 +57,7 @@
     <div id="map"></div>
 
     <form id="incidentForm" enctype="multipart/form-data" name="incidentForm">
-      <div id="address">Click on the map to add location</div>
+      <input type="text" id="address" name="address" placeholder="Click on the map to add location"></input>
       <input type="hidden" id="latitude" name="latitude" readonly />
       <input type="hidden" id="longitude" name="longitude" readonly />
       <label for="description">Description:</label>
@@ -74,10 +78,12 @@
     <div class="=result" id="uploadResult"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
-    <script src="scripts/locationPicker.js"></script>
+    <!-- <script  src="scripts/locationPicker.js"></script> -->
 
-    <script>
-
+    <script type="module">
+        //Lcation picker needs refactor, it needs the form update stuff taken out, insted pass in the form DOM data
+      import LocationPicker from "./scripts/locationPicker.js";
+      
       const $ = document.querySelector;
 
       const imageInput = document.getElementById("imageInput");
@@ -85,6 +91,8 @@
       const incidentForm = document.getElementById("incidentForm");
       const uploadButton = document.getElementById("uploadButton");
       const uploadResult = document.getElementById("uploadResult");
+
+      
       // Initialize the LocationPicker
       LocationPicker.init();
       //Pick image and display

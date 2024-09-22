@@ -97,6 +97,7 @@ router.post("/incident", async (context) => {
       description: formData.fields.description || "No description provided",
       latitude: formData.fields.latitude,
       longitude: formData.fields.longitude,
+      address: formData.fields.address || "No address provided",
       image: uploadResult.secure_url,
     });
 

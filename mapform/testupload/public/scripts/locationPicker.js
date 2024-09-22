@@ -1,4 +1,6 @@
-const LocationPicker = (function() {
+import { fetchLocationData } from "./fetch_location.js";
+
+ const LocationPicker = (function() {
     let map, marker;
     const form = document.getElementById('locationForm');
     const latitudeInput = document.getElementById('latitude');
@@ -30,7 +32,7 @@ const LocationPicker = (function() {
     function updateForm(lat, lng,address) {
         latitudeInput.value = lat;
         longitudeInput.value = lng;
-        addressField.textContent = ` ${address.street},  ${address.city}, postcode: ${address.postcode}`;
+        addressField.value = ` ${address.street},  ${address.city}, postcode: ${address.postcode}`;
         saveButton.disabled = false;
     }
 
@@ -41,34 +43,10 @@ const LocationPicker = (function() {
 
     }
 
-
-    async function fetchLocationData(latitude, longitude) {
-        const apiUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
-      
-        try {
-          const response = await fetch(apiUrl);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-      
-          // Extract required information
-          const street = data.address.road || 'N/A';
-          const city = data.address.city || data.address.town || data.address.village || 'N/A';
-          const postcode = data.address.postcode || 'N/A';
-      
-          return {
-            street,
-            city,
-            postcode
-          };
-        } catch (error) {
-          console.error('Error fetching location data:', error);
-          return null;
-        }
-      }
-
     return {
         init: init
     };
 })();
+
+
+export default LocationPicker
