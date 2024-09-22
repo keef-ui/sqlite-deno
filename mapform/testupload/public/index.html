@@ -6,13 +6,31 @@
     <title>Modular Map Location Picker</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
     <style>
+        :root {
+            --min-width:20rem;
+        }
         #map { height: 400px; width: 100%; }
         form { margin-top: 20px; }
         input, button { margin: 10px 0; }
+        form,.address {
+    display: flex;
+    flex-direction: column;
+    width: var(--min-width);
+}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+#imagePreview {
+    max-width: calc(var(--min-width) - 10rem);
+    object-fit: contain;
+}
     </style>
 </head>
 <body>
     <div id="map"></div>
+    <div id="address"></div>
     <form id="incidentForm" enctype="multipart/form-data" name="incidentForm">
         <label for="latitude">Latitude:</label>
         <input type="text" id="latitude" name="latitude" readonly>
@@ -22,10 +40,9 @@
         <input type="email" id="email" name="email" >
         <input type="file" id="imageInput" name="imageInput" accept="image/*" required>
         <br>
-        <img id="imagePreview" src="" alt="Image preview" style="display: none;">
-        <br>
         <button type="submit" id="saveButton" disabled>Save Location</button>
     </form>
+    <img id="imagePreview" src="" alt="Image preview" style="display: none;">
     <div class="=result" id="uploadResult"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
@@ -69,7 +86,7 @@ incidentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const file = imageInput.files[0];
             const formData = new FormData(incidentForm);
-        uploadToServer(formData);
+        await uploadToServer(formData);
           
 
         });
