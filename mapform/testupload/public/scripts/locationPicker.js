@@ -30,7 +30,7 @@ const LocationPicker = (function() {
     function updateForm(lat, lng,address) {
         latitudeInput.value = lat;
         longitudeInput.value = lng;
-        addressField.textContent = `street: ${address.street}, city: ${address.city}, postcode: ${address.postcode}`;
+        addressField.textContent = ` ${address.street},  ${address.city}, postcode: ${address.postcode}`;
         saveButton.disabled = false;
     }
 

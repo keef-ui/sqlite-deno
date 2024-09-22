@@ -1,127 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Modular Map Location Picker</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
+    />
     <style>
-        :root {
-            --min-width:20rem;
-        }
-        #map { height: 400px; width: 100%; }
-        form { margin-top: 20px; }
-        input, button { margin: 10px 0; }
-        form,.address {
-    display: flex;
-    flex-direction: column;
-    width: var(--min-width);
-}
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-#imagePreview {
-    max-width: calc(var(--min-width) - 10rem);
-    object-fit: contain;
-}
+      :root {
+        --min-width: 20rem;
+        --padding:8px;
+      }
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+      form {
+        margin-top: 20px;
+      }
+      input,
+      button {
+        margin: 10px 0;
+      }
+      form,
+      .address {
+        display: flex;
+        flex-direction: column;
+        width: var(--min-width);
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #imagePreview {
+        max-width: calc(var(--min-width) - 10rem);
+        object-fit: contain;
+      }
+      #address {
+        padding: var(--padding);
+        background: black;
+        color: white;
+      }
+      label {
+          padding-top: var(--padding);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="map"></div>
-    
+
     <form id="incidentForm" enctype="multipart/form-data" name="incidentForm">
-        <div id="address"></div>
-        <label for="latitude">Latitude:</label>
-        <input type="text" id="latitude" name="latitude" readonly>
-        <label for="longitude">Longitude:</label>
-        <input type="text" id="longitude" name="longitude" readonly>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" >
-        <input type="file" id="imageInput" name="imageInput" accept="image/*" required>
-        <br>
-        <button type="submit" id="saveButton" disabled>Save Location</button>
+      <div id="address">Click on the map to add location</div>
+      <input type="hidden" id="latitude" name="latitude" readonly />
+      <input type="hidden" id="longitude" name="longitude" readonly />
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" />
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" />
+      <input
+        type="file"
+        id="imageInput"
+        name="imageInput"
+        accept="image/*"
+        required
+      />
+      <br />
+      <button type="submit" id="saveButton" disabled>Save Location</button>
     </form>
-    <img id="imagePreview" src="" alt="Image preview" style="display: none;">
+    <img id="imagePreview" src="" alt="Image preview" style="display: none" />
     <div class="=result" id="uploadResult"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
     <script src="scripts/locationPicker.js"></script>
 
     <script>
-        const $=document.querySelector
 
-        const imageInput = document.getElementById('imageInput');
-        const imagePreview = document.getElementById('imagePreview');
-        const incidentForm = document.getElementById('incidentForm');
-        const uploadButton = document.getElementById('uploadButton');
-        const uploadResult = document.getElementById('uploadResult');
-    // Initialize the LocationPicker
-    LocationPicker.init();
-    //Pick image and display
-    imageInput.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'inline-block';
-                    // uploadButton.disabled = false;
-                }
-                reader.readAsDataURL(file);
-            }
-        });
-    async function saveToDatabase(lat, lng) {
-        try {
-      // Save to database
-        } catch (error) {
-            console.error('Error:', error);
-            alert('An error occurred while saving the location');
+      const $ = document.querySelector;
+
+      const imageInput = document.getElementById("imageInput");
+      const imagePreview = document.getElementById("imagePreview");
+      const incidentForm = document.getElementById("incidentForm");
+      const uploadButton = document.getElementById("uploadButton");
+      const uploadResult = document.getElementById("uploadResult");
+      // Initialize the LocationPicker
+      LocationPicker.init();
+      //Pick image and display
+      imageInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = "inline-block";
+            // uploadButton.disabled = false;
+          };
+          reader.readAsDataURL(file);
         }
-    }
+      });
+      async function saveToDatabase(lat, lng) {
+        try {
+          // Save to database
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while saving the location");
+        }
+      }
 
-//TODO: add image upload to codinary
+      //TODO: add image upload to codinary
 
-incidentForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const file = imageInput.files[0];
-            const formData = new FormData(incidentForm);
+      incidentForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const file = imageInput.files[0];
+        const formData = new FormData(incidentForm);
         await uploadToServer(formData);
-          
+      });
 
-        });
+      function uploadToServer(formData) {
+        console.log(formData.get("latitude"));
 
-        function uploadToServer(formData) {
-            
-            console.log(formData.get('latitude'))
-
-            fetch('/incident', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    console.log('Upload successful:', data);
-                    uploadResult.innerHTML = `
+        fetch("/incident", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              console.log("Upload successful:", data);
+              uploadResult.innerHTML = `
                         <p>Upload successful!</p>
                         <p>Latitude: ${data.latitude}</p>
                         <p>Longitude: ${data.longitude}</p>
                         
                     `;
-                } else {
-                    throw new Error(data.message || 'Upload failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                uploadResult.innerHTML = `<p>Upload failed: ${error.message}</p>`;
-            });
-        }
+            } else {
+              throw new Error(data.message || "Upload failed");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            uploadResult.innerHTML = `<p>Upload failed: ${error.message}</p>`;
+          });
+      }
 
-        const form = document.querySelector("#fileinfo");
-
+      const form = document.querySelector("#fileinfo");
     </script>
-</body>
+  </body>
 </html>
