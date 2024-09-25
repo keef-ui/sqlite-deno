@@ -9,12 +9,15 @@ const router = new Router();
 
 const db_connectionString: string = Deno.env.get("SQLITECLOUD_URL_INCIDENT");
 const db_table = 'incident';
+const  cl_name=Deno.env.get("CLOUDINARY_NAME")
+const cl_key=Deno.env.get("CLOUDINARY_KEY")
+const cl_secret=Deno.env.get("CLOUDINARY_SECRET")
 
 // Cloudinary configuration
 cloudinary.config({ 
-  cloud_name: 'dou1jgie5', 
-  api_key: '759725938855265', 
-  api_secret: 'DemvlZMt4efeKtwEaH_gvbEhUIA' // Click 'View API Keys' above to copy your API secret
+  cloud_name:cl_name , 
+  api_key: cl_key , 
+  api_secret:cl_secret  // Click 'View API Keys' above to copy your API secret
 });
 
 // Serve static files from the "public" directory
@@ -47,39 +50,6 @@ router.post("/incident", async (context) => {
     console.log("file name: " + file.originalName);
 
     //Upload file to Cloudinary
-    // Create a promise to handle the upload_stream
-    const uploadPromise = new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: "incidents",
-          public_id: `incident_${Date.now()}`,
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-
-      // Convert the file content to a ReadableStream
-      const readableStream = new ReadableStream({
-        start(controller) {
-          controller.enqueue(file.content);
-          controller.close();
-        },
-      });
-
-      // Pipe the ReadableStream to the Cloudinary upload stream
-      readableStream.pipeTo(new WritableStream({
-        write(chunk) {
-          uploadStream.write(chunk);
-        },
-        close() {
-          uploadStream.end();
-        },
-      }));
-    });
-
-    // Wait for the upload to complete
     const uploadResult = await uploadPromiseDenoCloudinary(file);
 
     // DB Insertion of incident form
@@ -118,7 +88,40 @@ router.post("/incident", async (context) => {
       message: `Oops... something went wrong: ${error.message}`,
     };
   }
-});
+})
+.post("/edgetest",async (context) => {
+//edgefunction calling url -format -> https://edge_url/funtion-1?apikey=YOUR_API_KEY
+ // TODO: Takeout all apis keys
+
+  console.log("edgetest")
+
+
+  const url = "https://cmfjiktliz.sqlite.cloud:8090/v2/functions/function-1?apikey=uUjUGuTffgwEgNyHQ3pP6UbI6A2oR5Ie4o6RfDcHbZo&limit=-1";
+  
+  const options = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      filter: "a"})
+  };
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    // return new Response(JSON.stringify(data), {
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    context.response.body = JSON.stringify(data.data.result);
+  } catch (error) {
+    // return new Response(JSON.stringify({ error: error.message }), {
+    //   status: 500,
+    //   headers: { "Content-Type": "application/json" },
+    // });
+    context.response.body = JSON.stringify({ error: error.message });
+  }
+  });
 
 app.use(router.routes());
 app.use(router.allowedMethods());
