@@ -10,6 +10,19 @@ const key = await crypto.subtle.generateKey(
   ["sign", "verify"]
 );
 
+// Serve static files from the "public" directory
+app.use(async (context, next) => {
+    try {
+      await context.send({
+        root: `${Deno.cwd()}/public`,
+        index: "index.html",
+      });
+    } catch {
+      await next();
+    }
+  });
+  
+
 // Middleware to parse JSON
 app.use(async (ctx, next) => {
   if (ctx.request.hasBody) {

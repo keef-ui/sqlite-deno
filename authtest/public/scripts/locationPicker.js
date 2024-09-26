@@ -1,8 +1,11 @@
-const LocationPicker = (function() {
+import { fetchLocationData } from "./fetch_location.js";
+
+ const LocationPicker = (function() {
     let map, marker;
     const form = document.getElementById('locationForm');
     const latitudeInput = document.getElementById('latitude');
     const longitudeInput = document.getElementById('longitude');
+    const addressField=document.getElementById('address');
     const saveButton = document.getElementById('saveButton');
 
     function initMap() {
@@ -14,21 +17,22 @@ const LocationPicker = (function() {
         map.on('click', onMapClick);
     }
 
-    function onMapClick(e) {
+    async function onMapClick(e) {
         const lat = e.latlng.lat.toFixed(6);
         const lng = e.latlng.lng.toFixed(6);
 
         if (marker) {
             map.removeLayer(marker);
         }
-
+        const address = await fetchLocationData(lat, lng);
         marker = L.marker([lat, lng]).addTo(map);
-        updateForm(lat, lng);
+        updateForm(lat, lng, address);
     }
 
-    function updateForm(lat, lng) {
+    function updateForm(lat, lng,address) {
         latitudeInput.value = lat;
         longitudeInput.value = lng;
+        addressField.value = ` ${address.street},  ${address.city}, postcode: ${address.postcode}`;
         saveButton.disabled = false;
     }
 
@@ -43,3 +47,6 @@ const LocationPicker = (function() {
         init: init
     };
 })();
+
+
+export default LocationPicker
