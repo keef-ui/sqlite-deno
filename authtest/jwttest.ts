@@ -4,24 +4,18 @@ import { create, verify } from "https://deno.land/x/djwt/mod.ts";
 const app = new Application();
 const router = new Router();
 
+
+const COOKIE_AGE = 10;
+const PROTECTED_PATHS=[ "/admin","/members/index.html","/members"]
+const LOGIN_REDIRECT = "/login.html";
+
 const key = await crypto.subtle.generateKey(
   { name: "HMAC", hash: "SHA-512" },
   true,
   ["sign", "verify"]
 );
 
-// Serve static files from the "public" directory
-app.use(async (context, next) => {
-    try {
-      await context.send({
-        root: `${Deno.cwd()}/public`,
-        index: "index.html",
-      });
-    } catch {
-      await next();
-    }
-  });
-  
+
 
 // Middleware to parse JSON
 app.use(async (ctx, next) => {
@@ -40,6 +34,8 @@ async function authMiddleware(ctx: any, next: () => Promise<void>) {
   if (!token) {
     ctx.response.status = 401;
     ctx.response.body = { message: "No authentication token provided" };
+    //   Redirect to login page if no token is found
+    ctx.response.redirect(LOGIN_REDIRECT);
     return;
   }
   
@@ -50,15 +46,16 @@ async function authMiddleware(ctx: any, next: () => Promise<void>) {
   } catch (err) {
     ctx.response.status = 401;
     ctx.response.body = { message: "Invalid token" };
+    ctx.response.redirect(LOGIN_REDIRECT);
   }
 }
 
 // Middleware to serve static files
 async function staticFileMiddleware(ctx: any, next: () => Promise<void>) {
   const path = ctx.request.url.pathname;
-  
+  console.log(path)
   // List of protected paths
-  const protectedPaths = ["/protected", "/admin"];
+  const protectedPaths = PROTECTED_PATHS;
   
   // Check if the requested path is protected
   if (protectedPaths.some(protectedPath => path.startsWith(protectedPath))) {
@@ -108,7 +105,7 @@ router.post("/login", async (ctx) => {
         httpOnly: true,
         secure: false,  // Use this in production with HTTPS
         sameSite: "strict",
-        maxAge: 60 * 60 * 24, // 1 day in seconds
+        maxAge: COOKIE_AGE, // 1 day in seconds
         path: "/",
       });
       
@@ -124,11 +121,14 @@ router.post("/login", async (ctx) => {
 });
 
 // Logout route
-router.post("/logout", async (ctx) => {
-  await ctx.cookies.delete("token");
-  ctx.response.body = { message: "Logout successful" };
-});
 
+
+
+//redirects
+router.post("/members", async (ctx) => {
+
+    ctx.response.redirect("/members/index.html");
+});
 app.use(router.routes());
 app.use(router.allowedMethods());
 
