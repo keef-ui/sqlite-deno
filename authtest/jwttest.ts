@@ -1,10 +1,12 @@
 import { Application, Router, send } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 import { create, verify } from "https://deno.land/x/djwt/mod.ts";
+import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { Model } from "../db/orm.ts";
 import "jsr:@std/dotenv/load";
 
 const app = new Application();
 const router = new Router();
+const handle = new Handlebars();
 
 const db_connectionString: string = Deno.env.get("SQLITECLOUD_URL_INCIDENT");
 const db_table = 'incident';
@@ -54,7 +56,7 @@ async function authMiddleware(ctx: any, next: () => Promise<void>) {
 }
 
 // Middleware to serve static files
-async function staticFileMiddleware(ctx: any, next: () => Promise<void>) {
+async function protectedPathMiddleware(ctx: any, next: () => Promise<void>) {
   const path = ctx.request.url.pathname;
   console.log(path)
   // List of protected paths
@@ -87,7 +89,7 @@ async function staticFileMiddleware(ctx: any, next: () => Promise<void>) {
 }
 
 // Use static file middleware
-app.use(staticFileMiddleware);
+app.use(protectedPathMiddleware);
 
 // Public route
 router.get("/", (ctx) => {
@@ -122,6 +124,22 @@ router.post("/login", async (ctx) => {
     ctx.response.body = { message: "Invalid request body" };
   }
 });
+
+
+  router.get("/members/update_incident", async (ctx) => {
+    const url = new URL(ctx.request.url);
+    const incidentId = url.searchParams.get("id");
+  console.log(incidentId)
+    if (incidentId) {
+        console.log(incidentId)
+    const html =  await handle.renderView("index", { incidentId });
+
+      ctx.response.body = html;
+    } else {
+      ctx.response.status = 400;
+      ctx.response.body = "Incident ID is required";
+    }
+  });
 
 // Logout route
 
