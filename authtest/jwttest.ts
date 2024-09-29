@@ -125,6 +125,7 @@ router.post("/login", async (ctx) => {
   }
 });
 
+// Protected route
 
   router.get("/members/update_incident", async (ctx) => {
     const url = new URL(ctx.request.url);
@@ -132,7 +133,7 @@ router.post("/login", async (ctx) => {
   console.log(incidentId)
     if (incidentId) {
         console.log(incidentId)
-    const html =  await handle.renderView("index", { incidentId });
+    const html =  await handle.renderView("updateincident", { incidentId },"main");
 
       ctx.response.body = html;
     } else {
