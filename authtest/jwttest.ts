@@ -1,12 +1,15 @@
 import { Application, Router, send } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 import { create, verify } from "https://deno.land/x/djwt/mod.ts";
+import { Model } from "../db/orm.ts";
+import "jsr:@std/dotenv/load";
 
 const app = new Application();
 const router = new Router();
 
-
-const COOKIE_AGE = 10;
-const PROTECTED_PATHS=[ "/admin","/members/index.html","/members"]
+const db_connectionString: string = Deno.env.get("SQLITECLOUD_URL_INCIDENT");
+const db_table = 'incident';
+const COOKIE_AGE = 60 * 60 * 24;
+const PROTECTED_PATHS=[ "/admin","/members/index.html","/members","/api/incidents" ];
 const LOGIN_REDIRECT = "/login.html";
 
 const key = await crypto.subtle.generateKey(
@@ -129,8 +132,34 @@ router.post("/members", async (ctx) => {
 
     ctx.response.redirect("/members/index.html");
 });
+
+//api routes
+
+router.get("/api/incidents", async (ctx) => {
+    // const result = await client.queryObject("SELECT id, title, author, summary FROM book");
+    // DB Insertion of incident form
+    //DB init
+    await Model.initialize(db_connectionString);
+    class Incident extends Model {
+        static tableName = db_table;
+      }
+
+    const allIncidents = await Incident.findAll();
+    console.log(allIncidents);
+
+    const mockIncidents = [
+        { id: 1, email: "Book One", latitude: "Author One", time: "Summary of book one." },
+        { id: 2, email: "Book Two", latitude: "Author Two", time: "Summary of book two." },
+        { id: 3, email: "Book Three", latitude: "Author Three", time: "Summary of book three." },
+      ];
+    // ctx.response.body = result.rows;
+    ctx.response.body = allIncidents;
+  });
+
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 
 console.log("Server running on http://localhost:8000");
 await app.listen({ port: 8000 });
+
