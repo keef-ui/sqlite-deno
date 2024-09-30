@@ -4,21 +4,29 @@ import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { Model } from "../db/orm.ts";
 import "jsr:@std/dotenv/load";
 
+//Web server
 const app = new Application();
 const router = new Router();
-const handle = new Handlebars();
+const handle = new Handlebars(); //Templating with handlebars (Refer to folders : views->Layouts|Partials|Pages)
 
-const db_connectionString: string = Deno.env.get("SQLITECLOUD_URL_INCIDENT");
-const db_table = 'incident';
+//--jwt stuff
 const COOKIE_AGE = 60 * 60 * 24;
 const PROTECTED_PATHS=[ "/admin","/members/index.html","/members","/api/incidents" ];
 const LOGIN_REDIRECT = "/login.html";
-
 const key = await crypto.subtle.generateKey(
-  { name: "HMAC", hash: "SHA-512" },
-  true,
-  ["sign", "verify"]
-);
+    { name: "HMAC", hash: "SHA-512" },
+    true,
+    ["sign", "verify"]
+  );
+  
+
+//DB
+const db_connectionString: string = Deno.env.get("SQLITECLOUD_URL_INCIDENT");
+const db_table = 'incident';
+// //-- example creating table 
+// class My_custom_table extends Model {
+//     static tableName = db_table;
+//   }
 
 
 
