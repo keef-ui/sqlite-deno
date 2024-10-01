@@ -21,6 +21,8 @@ const key = await crypto.subtle.generateKey(
   
 
 //DB
+if (!Deno.env.get("SQLITECLOUD_URL_INCIDENT")) console.error(".env Error: SQLITECLOUD_URL_INCIDENT not set");
+
 const db_connectionString: string = Deno.env.get("SQLITECLOUD_URL_INCIDENT");
 const db_table = 'incident';
 // //-- example creating table 
@@ -66,7 +68,8 @@ async function authMiddleware(ctx: any, next: () => Promise<void>) {
 // Middleware to serve static files
 async function protectedPathMiddleware(ctx: any, next: () => Promise<void>) {
   const path = ctx.request.url.pathname;
-  console.log(path)
+  // console.log("protectedPathMiddleware :",path)
+
   // List of protected paths
   const protectedPaths = PROTECTED_PATHS;
   
@@ -140,8 +143,7 @@ router.post("/login", async (ctx) => {
     const incidentId = url.searchParams.get("id");
     console.log("/members/update_incident?id=",incidentId)
     if (incidentId) {
-        console.log(incidentId)
-    const html =  await handle.renderView("updateincident", { incidentId },"main");
+      const html =  await handle.renderView("updateincident", { incidentId },"main");
 
       ctx.response.body = html;
     } else {
@@ -163,9 +165,8 @@ router.post("/members", async (ctx) => {
 //api routes
 
 router.get("/api/incidents", async (ctx) => {
-    // const result = await client.queryObject("SELECT id, title, author, summary FROM book");
-    // DB Insertion of incident form
-    //DB init
+
+    console.log("/api/incidents....fetching incidents");
     await Model.initialize(db_connectionString);
     class Incident extends Model {
         static tableName = db_table;
@@ -174,11 +175,6 @@ router.get("/api/incidents", async (ctx) => {
     const allIncidents = await Incident.findAll();
     console.log(allIncidents);
 
-    const mockIncidents = [
-        { id: 1, email: "Book One", latitude: "Author One", time: "Summary of book one." },
-        { id: 2, email: "Book Two", latitude: "Author Two", time: "Summary of book two." },
-        { id: 3, email: "Book Three", latitude: "Author Three", time: "Summary of book three." },
-      ];
     // ctx.response.body = result.rows;
     ctx.response.body = allIncidents;
   });
