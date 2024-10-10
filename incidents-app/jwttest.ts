@@ -5,7 +5,8 @@ import {
 } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 import { create, verify } from "https://deno.land/x/djwt/mod.ts";
 import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
-import { Model } from "../db/orm.ts";
+// import { Model } from "../db/orm.ts";
+import { Model } from "../db/orm-buggy.ts";
 import "jsr:@std/dotenv/load";
 
 //Web server
