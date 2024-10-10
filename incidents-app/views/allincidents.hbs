@@ -1,0 +1,41 @@
+<h1>All Incidents</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>email</th>
+                <th>Incident details</th>
+                <th>Location</th>
+                <th>Time</th>
+                <th>Photo</th>
+            </tr>
+        </thead>
+        <tbody id="incident-list">
+            <!-- Book rows will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchincidents() {
+            try {
+                const response = await fetch('http://localhost:8000/api/incidents');
+                const incidents = await response.json();
+                const incidentList = document.getElementById('incident-list');
+
+                incidents.forEach(incident => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${incident.id}</td>
+                        <td>${incident.email}</td>
+                        <td>${incident.latitude}</td>
+                        <td>${incident.timestamp}</td>
+                    `;
+                    incidentList.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching incidents:', error);
+            }
+        }
+
+        fetchincidents();
+    </script>

@@ -2,7 +2,7 @@ import { Database } from 'npm:@sqlitecloud/drivers'
 import { Input } from "https://deno.land/x/cliffy@v1.0.0-rc.4/prompt/mod.ts";
 import "jsr:@std/dotenv/load";
 
-
+// deno run --allow-read --allow-net --allow-env dbtest.tsauth
 
 const connectionString = Deno.env.get("SQLITECLOUD_DENO")
 
@@ -82,38 +82,41 @@ let table2="sessions";
 // Create customers table using the new function
 await createTable(table, [
   { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-  { name: 'name', type: 'TEXT', notNull: true, unique: true },
-  { name: 'email', type: 'TEXT', notNull: true, unique: true }
-  { name: 'password', type: 'TEXT', notNull: true }
-]);
-
-// Create customers table using the new function
-await createTable(table, [
-  { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
-  { name: 'name', type: 'TEXT', notNull: true, unique: true },
+  { name: 'username', type: 'TEXT', notNull: true, unique: true },
   { name: 'email', type: 'TEXT', notNull: true, unique: true },
   { name: 'password', type: 'TEXT', notNull: true }
 ]);
 
-export const sessions = pgTable('sessions', {
-  id: serial('id').primaryKey(),
-  userId: integer('userId')
-    .references(() => users.id)
-    .notNull(),
-  expiresAt: timestamp('expires_at').notNull(),
-});
+
+await createTable(table2, [
+  { name: 'id', type: 'INTEGER', primaryKey: true, autoIncrement: true },
+  { name: 'username', type: 'TEXT', notNull: true, unique: true },
+  { name: 'email', type: 'TEXT', notNull: true, unique: true },
+  { name: 'password', type: 'TEXT', notNull: true }
+]);
+
+
+
+// export const sessions = pgTable('sessions', {
+//   id: serial('id').primaryKey(),
+//   userId: integer('userId')
+//     .references(() => users.id)
+//     .notNull(),
+//   expiresAt: timestamp('expires_at').notNull(),
+// });
 
 // Check if user 'johndoe' exists, if not create it
 let username = '22johndoeee';
 let email = 'zzz22johndoe@example.com';
+let password = 'zzz22johndoe@example.com';
 
 let existingUser = await database.sql`SELECT * FROM ${table} WHERE username = ${username}`;
 
 if (existingUser.length === 0) {
   // User doesn't exist, so insert it
-  let test=await database.sql`INSERT INTO  ${table} (username, email) VALUES (${username}, ${email})`;
-  console.log(`User '${username}' created successfully.----> ${test}`);
-  console.log(test)
+  let insert_result=await database.sql`INSERT INTO  ${table} (username, email,password) VALUES (${username}, ${email}, ${password})`;
+  console.log(`User '${username}' created successfully.----> `);
+  console.log({insert_result})
 } else {
   console.log(`User '${username}' already exists.`);
 }
