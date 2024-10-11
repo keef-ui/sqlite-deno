@@ -129,7 +129,7 @@
       function uploadToServer(formData) {
         console.log(formData.get("latitude"));
 
-        fetch("/incident", {
+        fetch("/api/incident", {
           method: "POST",
           body: formData,
         })
