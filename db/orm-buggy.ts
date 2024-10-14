@@ -2,7 +2,7 @@ import { Database } from 'npm:@sqlitecloud/drivers'
 import "jsr:@std/dotenv/load";
 
 //******************************************** */
-// Temp fix for connction bug in Model.initialize
+// DENO-only:Temp fix for connction bug in Model.initialize
 // this.database = new Database({connectionstring: connectionString,
 //   usewebsocket: true,
 //   verbose: true});
