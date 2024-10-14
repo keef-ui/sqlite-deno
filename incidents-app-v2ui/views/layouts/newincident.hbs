@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modular Map Location Picker</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <link rel="stylesheet" href="css/app.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
+    />
+    <style>
+      :root {
+        --min-width: 20rem;
+        --padding:8px;
+      }
+      #map {
+        height: 400px;
+        width: 100%;
+      }
+      form {
+        margin-top: 20px;
+      }
+      input,
+      button {
+        margin: 10px 0;
+      }
+      form,
+      .address {
+        display: flex;
+        flex-direction: column;
+        width: var(--min-width);
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #imagePreview {
+        max-width: calc(var(--min-width) - 10rem);
+        object-fit: contain;
+      }
+      #address {
+        padding: var(--padding);
+        background: black;
+        color: white;
+      }
+      #address::placeholder {
+  color: yellow;
+  opacity: 1; /* Firefox */
+}
+      label {
+          padding-top: var(--padding);
+      }
+    </style>
+  </head>
+  <body>
+{{{body}}}
+    <script src="js/jquery.js"></script>
+    <script src="js/what-input.js"></script>
+    <script src="js/foundation.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

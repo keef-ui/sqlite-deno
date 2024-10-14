@@ -1,0 +1,93 @@
+<h1>All Incidents</h1>
+<table class="hover">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Email</th>
+            <th>Incident Details</th>
+            <th>Location</th>
+            <th>Time</th>
+            <th>Photo</th>
+        </tr>
+    </thead>
+    <tbody id="incident-list">
+        <!-- Book rows will be inserted here -->
+    </tbody>
+</table>
+
+<div id="incident-list2" class="grid-container">
+
+
+
+</div>
+
+<div class="reveal" id="exampleModal1" data-reveal>
+    <h1>Awesome. I Have It.</h1>
+    <p class="lead">Your couch. It is mine.</p>
+    <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+        <button class="close-buttonx" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">No</span>
+        </button>
+</div>
+<p><button class="button" data-open="exampleModal1">Click me for a modal</button></p>
+<script>
+    async function fetchincidents() {
+        try {
+            const response = await fetch('http://localhost:8000/api/incidents');
+            const incidents = await response.json();
+            const incidentList = document.getElementById('incident-list');
+            incidents.forEach(incident => {
+                const row = document.createElement('tr');
+                row.innerHTML = `                        
+          <td>${incident.id}</td>                        
+          <td>${incident.email}</td>                        
+          <td>${incident.latitude}</td>                        
+          <td>${incident.timestamp}</td>                    
+        `;
+                incidentList.appendChild(row);
+            });
+        } catch (error) {
+            console.error('Error fetching incidents:', error);
+        }
+    }
+    fetchincidents();    
+
+        async function test() {
+                try {
+                    const response = await fetch('http://localhost:8000/api/incidents');
+                    const incidents = await response.json();
+                    const incidentList = document.getElementById('incident-list2');
+                    incidents.forEach(incident => {
+                        const row = document.createElement('div');
+                        row.innerHTML = `    <div class="grid-x grid-padding-x" style="margin-bottom: 20px;background-color: rgb(241.3, 241.3, 241.3);">
+        <div class="cell  large-5">
+            <div class="grid-y">
+                <div class="cell">Email: >${incident.email}</div>
+                <div class="cell">Incident Details:${incident.description}</div>
+
+            </div>
+        </div>
+        <div class="cell large-3">Incident Location: ${incident.address}</div>
+        <div class="cell auto"><img src="${incident.image}"></div>
+        <div class="cell auto"><img src="https://get.foundation/sites/docs-v5/assets/img/examples/satelite.jpg"></div>
+        <div class="cell">Notes:</div>
+        <div class="cell">Status:</div>
+    </div>`;
+                        incidentList.appendChild(row);
+                    });
+                } catch (error) {
+                    console.error('Error fetching incidents:', error);
+                }
+            }
+
+        test();
+
+
+
+
+
+</script>
+

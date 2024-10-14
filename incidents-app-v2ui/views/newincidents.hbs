@@ -1,0 +1,101 @@
+  <div id="map"></div>
+
+    <form id="incidentForm" enctype="multipart/form-data" name="incidentForm">
+      <input type="text" id="address" name="address" placeholder="Click on the map to add location"></input>
+      <input type="hidden" id="latitude" name="latitude" readonly />
+      <input type="hidden" id="longitude" name="longitude" readonly />
+      <label for="description">Description:</label>
+      <input type="text" id="description" name="description" />
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" />
+      <input
+        type="file"
+        id="imageInput"
+        name="imageInput"
+        accept="image/*"
+        required
+      />
+      <br />
+      <button type="submit" id="saveButton" disabled>Save Location</button>
+    </form>
+    <img id="imagePreview" src="" alt="Image preview" style="display: none" />
+    <div class="=result" id="uploadResult"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <!-- <script  src="scripts/locationPicker.js"></script> -->
+
+    <script type="module">
+        //Lcation picker needs refactor, it needs the form update stuff taken out, insted pass in the form DOM data
+      import LocationPicker from "../scripts/locationPicker.js";
+      
+      const $ = document.querySelector;
+
+      const imageInput = document.getElementById("imageInput");
+      const imagePreview = document.getElementById("imagePreview");
+      const incidentForm = document.getElementById("incidentForm");
+      const uploadButton = document.getElementById("uploadButton");
+      const uploadResult = document.getElementById("uploadResult");
+
+      
+      // Initialize the LocationPicker
+      LocationPicker.init();
+      //Pick image and display
+      imageInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = "inline-block";
+            // uploadButton.disabled = false;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+      async function saveToDatabase(lat, lng) {
+        try {
+          // Save to database
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while saving the location");
+        }
+      }
+
+      //TODO: add image upload to codinary
+
+      incidentForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const file = imageInput.files[0];
+        const formData = new FormData(incidentForm);
+        await uploadToServer(formData);
+      });
+
+      function uploadToServer(formData) {
+        console.log(formData.get("latitude"));
+
+        fetch("/api/incident", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              console.log("Upload successful:", data);
+              uploadResult.innerHTML = `
+                        <p>Upload successful!</p>
+                        <p>Latitude: ${data.latitude}</p>
+                        <p>Longitude: ${data.longitude}</p>
+                        
+                    `;
+            } else {
+              throw new Error(data.message || "Upload failed");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            uploadResult.innerHTML = `<p>Upload failed: ${error.message}</p>`;
+          });
+      }
+
+      const form = document.querySelector("#fileinfo");
+    </script>
