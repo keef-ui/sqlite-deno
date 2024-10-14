@@ -8,7 +8,10 @@ export class Model {
   static tableName: string;
 
   static async initialize(connectionString: string) {
-    this.database = new Database(connectionString);
+    // this.database = new Database(connectionString);
+    this.database = new Database({connectionstring: connectionString,
+      usewebsocket: true,
+      verbose: true});
   }
 
   static async createTable(columns: { [key: string]: string }) {

@@ -2,9 +2,11 @@ import { assertEquals, assertExists } from "https://deno.land/std@0.202.0/testin
 import { Database } from 'npm:@sqlitecloud/drivers';
 import "jsr:@std/dotenv/load";
 
+/************************************************ NOT WORKING***************** */
+
 // Import your Model and Customer classes here
 // For this example, I'll assume they're in a file called orm.ts
-import { Model, Customer } from "./test/orm-2.ts";
+import { Model, Customer } from "../test/orm-2.ts";
 
 // Mock database for testing
 class MockDatabase {

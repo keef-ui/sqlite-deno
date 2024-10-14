@@ -12,7 +12,7 @@ import "jsr:@std/dotenv/load";
  * }
  * 
  * // Initialize the database
- * await User.initialize('sqlite:///path/to/database.sqlite');
+ * await Model.initialize('sqlite:///path/to/database.sqlite');
  * 
 **/
 export class Model {
