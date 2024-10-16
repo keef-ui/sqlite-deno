@@ -14,7 +14,7 @@ export class Order extends Model {
 
 async function main() {
   
-  const connectionString = Deno.env.get("SQLITECLOUD_URL")
+  const connectionString = Deno.env.get("SQLITECLOUD_TEST_URL")
   console.log(connectionString);
   await Model.initialize(connectionString);
 

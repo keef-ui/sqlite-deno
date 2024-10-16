@@ -70,6 +70,29 @@ export class Model {
   static async findAll() {
     return await this.database.sql(`SELECT * FROM ${this.tableName}`);
   }
+
+  // Describe the table
+  static async describeTable() {
+    try {
+      const tableInfo = await this.database.sql`PRAGMA table_info(${this.tableName})`;
+      if (tableInfo.length === 0) {
+        console.log(`Table '${this.tableName}' does not exist.`);
+        return;
+      }
+      
+      console.log(`\nDescription of table '${this.tableName}':`);
+      console.log('Column Name | Data Type | Not Null | Default Value | Primary Key');
+      console.log('------------|-----------|----------|----------------|-------------');
+      
+      for (const column of tableInfo) {
+        console.log(`${column.name.padEnd(12)}| ${column.type.padEnd(10)}| ${column.notnull ? 'Yes'.padEnd(9) : 'No'.padEnd(9)}| ${(column.dflt_value || '').padEnd(15)}| ${column.pk ? 'Yes' : 'No'}`);
+      }
+      return tableInfo;
+    } catch (error) {
+      console.error(`Error describing table '${this.tableName}':`, error);
+    }
+  }
 }
+
 
 
