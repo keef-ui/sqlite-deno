@@ -122,9 +122,12 @@ async function protectedPathMiddleware(ctx: any, next: () => Promise<void>) {
 // Use static file middleware
 app.use(protectedPathMiddleware);
 
-// Public route
-router.get("/", (ctx) => {
-  ctx.response.body = "Welcome to the public page!";
+//Landing page route
+router.get("/test", async (ctx) => {
+  const html = await handle.renderView("home_page", {}, "home_page");
+
+  ctx.response.body = html;
+  // ctx.response.redirect("/members/index.html");
 });
 
 // Login route
@@ -178,7 +181,7 @@ router.get("/members/update_incident", async (ctx) => {
 
 // Logout route
 
-//redirects
+//Memners page list all incidents
 router.get("/members", async (ctx) => {
   const html = await handle.renderView("allincidents", {}, "main");
 
