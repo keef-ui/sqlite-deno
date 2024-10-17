@@ -3,10 +3,14 @@ import { Database } from "npm:@sqlitecloud/drivers";
 import "jsr:@std/dotenv/load";
 import { Model } from "../db/orm-buggy.ts"; // Adjust the path as necessary
 
+// To run all test type: deno test --allow-net --allow-read --allow-env
+// To run specific test add --filter: deno test --allow-net --allow-read --allow-env test --filter "incident-describe"
+// To test Cretae and insert incident run: deno test --allow-net --allow-read --allow-env  --filter "incidentdb-createtest"
 
 //Test setup
 const connectionString:string =   Deno.env.get("SQLITECLOUD_TEST_URL")!
-const incident_connectionString:string =   Deno.env.get("SQLITECLOUD_URL_INCIDENT")!
+// const incident_connectionString:string =   Deno.env.get("SQLITECLOUD_URL_INCIDENT")!
+// const incident_connectionStringLive:string =   Deno.env.get("SQLITECLOUD_URL_INCIDENT")!
 
 class Customer extends Model{
   static tableName = 'customerstest';
@@ -100,12 +104,50 @@ Deno.test("Cleanup Database", testOptions ,async () => {
 Deno.test("incident-describe", testOptions,async () => {
 
   class Incident extends Model{
-    static tableName = 'incident';
+    static tableName = 'incident_test';
   }
-  await Model.initialize(incident_connectionString);
+  await Model.initialize(connectionString);
   await Incident.describeTable();
 
   
  
   assertEquals(1, 1, `Table '${Customer.tableName}' should be deleted`);
 });
+
+Deno.test("incidentdb-createtest", testOptions,async () => {
+
+  
+  class Incident extends Model{
+    static tableName = 'incident';
+  }
+  await Model.initialize(connectionString);
+
+await Incident.createTable({
+  id: "INTEGER PRIMARY KEY AUTOINCREMENT",
+  email: "TEXT NOT NULL",
+  description: "TEXT NOT NULL",
+  latitude: "NUM NOT NULL",
+  longitude: "NUM NOT NULL",
+  timestamp: "DATETIME DEFAULT CURRENT_TIMESTAMP",
+  image: "TEXT",
+  address: "TEXT",
+  notes: "TEXT",
+  status: "TEXT DEFAULT 'pending' CHECK(status IN ('pending', 'solved'))"
+});
+
+await Incident.insert({
+  email: "ex17-10-24@example.com",
+  description: "17-10-24 Incident description here",
+  latitude: 34.0522,
+  longitude: -118.2437,
+  timestamp: new Date().toISOString(),
+  image: "path/to/image.jpg",
+  address: "123 Example St, Los Angeles, CA",
+  notes: "Additional notes about the incident",
+  status: "pending"
+});
+
+  const tables = await Model.database.sql("SELECT name FROM sqlite_master WHERE type='table' AND name=?", Incident.tableName);
+  assert(tables.length > 0, `Table '${Incident.tableName}' should be created`);
+});
+
