@@ -1,21 +1,6 @@
 <h1>All Incidents</h1>
-<table class="hover">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Email</th>
-            <th>Incident Details</th>
-            <th>Location</th>
-            <th>Time</th>
-            <th>Photo</th>
-        </tr>
-    </thead>
-    <tbody id="incident-list">
-        <!-- Book rows will be inserted here -->
-    </tbody>
-</table>
 
-<div id="incident-list2" class="grid-container">
+<div id="incident-list" class="grid-container">
 
 
 
@@ -33,61 +18,132 @@
         </button>
 </div>
 <p><button class="button" data-open="exampleModal1">Click me for a modal</button></p>
-<script>
-    async function fetchincidents() {
-        try {
-            const response = await fetch('http://localhost:8000/api/incidents');
-            const incidents = await response.json();
-            const incidentList = document.getElementById('incident-list');
-            incidents.forEach(incident => {
-                const row = document.createElement('tr');
-                row.innerHTML = `                        
-          <td>${incident.id}</td>                        
-          <td>${incident.email}</td>                        
-          <td>${incident.latitude}</td>                        
-          <td>${incident.timestamp}</td>                    
-        `;
-                incidentList.appendChild(row);
-            });
-        } catch (error) {
-            console.error('Error fetching incidents:', error);
-        }
-    }
-    fetchincidents();    
-
-        async function test() {
+<div class="reveal" id="exampleModal99" data-reveal>
+    <h1>999999Awesome. I Have It.</h1>
+    <p class="lead">Your couch. It is mine.</p>
+    <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+        <button class="close-buttonx" data-close aria-label="Close modal" type="button">
+            <span aria-hidden="true">No</span>
+        </button>
+</div>
+<p><button class="button" data-open="exampleModal99">Click me for a modal99</button></p>
+<script async>
+         async function fetchIncidents() {
                 try {
                     const response = await fetch('http://localhost:8000/api/incidents');
                     const incidents = await response.json();
-                    const incidentList = document.getElementById('incident-list2');
+                    const incidentList = document.getElementById('incident-list');
                     incidents.forEach(incident => {
                         const row = document.createElement('div');
-                        row.innerHTML = `    <div class="grid-x grid-padding-x" style="margin-bottom: 20px;background-color: rgb(241.3, 241.3, 241.3);">
-        <div class="cell  large-5">
-            <div class="grid-y">
-                <div class="cell">Email: >${incident.email}</div>
-                <div class="cell">Incident Details:${incident.description}</div>
 
-            </div>
-        </div>
-        <div class="cell large-3">Incident Location: ${incident.address}</div>
-        <div class="cell auto"><img src="${incident.image}"></div>
-        <div class="cell auto"><img src="https://get.foundation/sites/docs-v5/assets/img/examples/satelite.jpg"></div>
-        <div class="cell">Notes:</div>
-        <div class="cell">Status:</div>
-    </div>`;
+                        incident.notes=(incident.notes ? incident.notes : '')//if no notes, make it blank
+                     
+                        //Table data
+                        const emailCell = `<div class="cell">Email: ${incident.email}</div>`;
+                        const detailsCell = `<div class="cell">Incident Details: ${incident.description}</div>`;
+                        const locationCell = `<div class="cell large-3">Incident Location: ${incident.address}</div>`;
+                        const imageCell1 = `<div class="cell auto"><img src="${incident.image}"></div>`;
+                        const imageCell2 = `<div class="cell auto"><img src="https://get.foundation/sites/docs-v5/assets/img/examples/satelite.jpg"></div>`;
+                        const notesCell = `<div class="cell">Notes: ${incident.notes}</div>`;
+                        const statusCell = `<div class="cell">Status: ${incident.status}</div>`;
+                        //Modal form
+                        const revealForm = `
+                        <div class="reveal" id="id-${incident.id}" data-reveal>
+                            <form>
+                            <input type="hidden" id="incidentId" name="id" value="${incident.id}">
+                            <div class="grid-x grid-padding-x">
+                                <div class="cell">
+                                <label>Email
+                                    <input id="email" name="email" value="${incident.email}" type="email" placeholder="Enter your email">
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Address
+                                    <input id="address" name="address" value="${incident.address}" type="text" placeholder="Enter your address">
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Location
+                                    <input id="location" name="location" value="${incident.location}" type="text" placeholder="Enter your location">
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Description
+                                    <textarea id="description" name="description" placeholder="Enter a description">${incident.description}</textarea>
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Notes
+                                    <textarea id="notes" name="notes" placeholder="Enter notes">${incident.notes}</textarea>
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Status
+                                   <select id="status" name="status">
+                                    <option value="pending" ${incident.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="solved" ${incident.status === 'solved' ? 'selected' : ''}>Solved</option>
+                                    </select>
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class="cell">
+                                <button type="submit" class="button">Submit</button>
+                                </div>
+                            </div>
+                            </form>
+                            <button class="close-button" data-close aria-label="Close modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            <button class="close-buttonx" data-close aria-label="Close modal" type="button">
+                            <span aria-hidden="true">No</span>
+                            </button>
+                        </div>
+                        <p><button class="button" data-open="id-${incident.id}">Click me for a modal</button></p>
+                        `;
+
+                        //Put it all together . The form is hidden by default
+                        row.innerHTML = `
+                        <div class="grid-x grid-padding-x" style="margin-bottom: 20px; background-color: rgb(241.3, 241.3, 241.3);">
+                            <div class="cell large-5">
+                            <div class="grid-y">
+                                ${emailCell}
+                                ${detailsCell}
+                            </div>
+                            </div>
+                            ${locationCell}
+                            ${imageCell1}
+                            ${imageCell2}
+                            ${notesCell}
+                            ${statusCell}
+                            <div>
+                            ${revealForm}
+                            </div>
+                        </div>
+                        `;
                         incidentList.appendChild(row);
-                    });
+                        var elem=$(`#id-`+incident.id); new Foundation.Reveal(elem); // Initialise the reveal form to make modal work
+                    }); 
                 } catch (error) {
                     console.error('Error fetching incidents:', error);
                 }
             }
 
-        test();
+      const test=fetchIncidents();
 
-
-
-
-
+    
 </script>
 
