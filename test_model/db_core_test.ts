@@ -151,3 +151,29 @@ await Incident.insert({
   assert(tables.length > 0, `Table '${Incident.tableName}' should be created`);
 });
 
+Deno.test("incidentdb-update", testOptions,async () => {
+
+  
+  class Incident extends Model{
+    static tableName = 'incident';
+  }
+  await Model.initialize(connectionString);
+
+  const result=await Incident.update({
+    id: 3,
+    email: "insert2222-ex17-10-24@example.com",
+    description: "insert2222-17-10-24 Incident description here",
+    latitude: 34.0522,
+    longitude: -118.2437,
+    timestamp: new Date().toISOString(),
+    image: "path/to/image.jpg",
+    address: "insert2222-test123 Example St, Los Angeles, CA",
+    notes: "Additional notes about the incident",
+    status: "pending"
+  });
+
+
+
+  const tables = await Model.database.sql("SELECT name FROM sqlite_master WHERE type='table' AND name=?", Incident.tableName);
+  assert(tables.length > 0, `Table '${Incident.tableName}' should be created`);
+});

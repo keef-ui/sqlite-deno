@@ -58,6 +58,31 @@ export class Model {
     await this.database.sql(query, ...values);
     console.log(`Record inserted into '${this.tableName}' successfully.`);
   }
+
+  static async update(data: { [key: string]: any }) {
+    if (!data.id) {
+      console.log("No ID provided. Record not updated.");
+      return;
+    }
+  
+    const existingRecord = await this.findBy({ id: data.id });
+    if (existingRecord.length === 0) {
+      console.log(`Record with ID '${data.id}' does not exist. Update not performed.`);
+      return;
+    }
+  
+    const columns = Object.keys(data)
+      .filter(key => key !== 'id')
+      .map(key => `${key} = ?`)
+      .join(', ');
+    const values = Object.values(data).filter(value => value !== data.id);
+    const query = `UPDATE ${this.tableName} SET ${columns} WHERE id = ?`;
+    
+    const result =await this.database.sql(query, ...values, data.id);
+    console.log(`Record with ID '${data.id}' updated successfully.`);
+    return result
+  }
+  
   static async deleteTable() {
     try {
       const query = `DROP TABLE IF EXISTS ${this.tableName}`;
