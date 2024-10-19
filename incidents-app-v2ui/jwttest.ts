@@ -30,7 +30,6 @@ const handle = new Handlebars(); //Templating with handlebars (Refer to folders 
 const COOKIE_AGE = 60 * 60 * 24;
 const PROTECTED_PATHS = [
   "/admin",
-  "/members/index.html",
   "/members",
   "/api/incidents",
 ];
@@ -285,7 +284,8 @@ router.post("/api/incident_update", async (ctx) => {
       id: formData.fields.id,
       email: formData.fields.email,
       description: formData.fields.description || "No description provided",
-      address: formData.fields.address || "No address provided"
+      address: formData.fields.address || "No address provided",
+      notes: formData.fields.notes || "No address provided",
     });
 
     // Return success response
