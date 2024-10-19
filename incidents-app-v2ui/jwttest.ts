@@ -264,6 +264,46 @@ router.post("/api/incident", async (ctx) => {
   }
 })
 
+// Incident update route
+router.post("/api/incident_update", async (ctx) => {
+  console.log("post /api/incident_update....");
+  try {
+
+    const body = ctx.request.body({ type: "form-data" });
+    const formData = await body.value.read({ maxSize: 10 * 1024 * 1024 }); // 10 MB limit
+
+    console.log("fields: ", formData.fields);
+
+    // DB Update of incident form
+    await Model.initialize(db_connectionString);
+    class Incident extends Model {
+      static tableName = db_table;
+    }
+
+    // Update the form data in the database
+    await Incident.update({
+      id: formData.fields.id,
+      email: formData.fields.email,
+      description: formData.fields.description || "No description provided",
+      address: formData.fields.address || "No address provided"
+    });
+
+    // Return success response
+    ctx.response.body = {
+      message: "Record updated successfully",
+      success: true,
+    };
+    Model.database.close();
+  } catch (error) {
+    console.error("Error:", error);
+    ctx.response.status = 500;
+    ctx.response.body = {
+      message: `Oops... something went wrong: ${error.message}`,
+    };
+  }
+});
+
+
 app.use(router.routes());
 app.use(router.allowedMethods());
 

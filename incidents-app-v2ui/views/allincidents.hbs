@@ -52,7 +52,7 @@
                         //Modal form
                         const revealForm = `
                         <div class="reveal" id="id-${incident.id}" data-reveal>
-                            <form>
+                            <form id="incidentForm{{incident.id}}" enctype="multipart/form-data" name="incidentForm{{incident.id}}" action="/api/incident_update" method="POST">
                             <input type="hidden" id="incidentId" name="id" value="${incident.id}">
                             <div class="grid-x grid-padding-x">
                                 <div class="cell">
