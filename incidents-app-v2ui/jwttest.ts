@@ -182,7 +182,7 @@ router.get("/members/update_incident", async (ctx) => {
 
 //Memners page list all incidents
 router.get("/members", async (ctx) => {
-  const html = await handle.renderView("allincidents", {}, "main");
+  const html = await handle.renderView("allincidents", {}, "allincidents");
 
   ctx.response.body = html;
   // ctx.response.redirect("/members/index.html");
