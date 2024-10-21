@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Incident</title>
+    <link rel="stylesheet" href="/css/foundation.css">
+    <link rel="stylesheet" href="/css/app.css">
+        <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
+    />
+    
+</head>
+<body>
+
+      {{{body}}}
+    <script src="/js/jquery.js"></script>
+    <script src="/js/what-input.js"></script>
+    <script src="/js/foundation.js"></script>
+    <script src="/js/app.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <!-- <script  src="scripts/locationPicker.js"></script> -->
+
+
+<script async>
+   
+         async function fetchIncidents() {
+                try {
+                    const response = await fetch('http://localhost:8000/api/incidents');
+                    const incidents = await response.json();
+                    const incidentList = document.getElementById('incident-list');
+                    incidents.forEach(incident => {
+                        const row = document.createElement('div');
+
+                        incident.notes=(incident.notes ? incident.notes : '')//if no notes, make it blank
+                     
+                        //Table data
+                        const emailCell = `<div class="cell">Email: ${incident.email}</div>`;
+                        const detailsCell = `<div class="cell">Incident Details: ${incident.description}</div>`;
+                        const locationCell = `<div class="cell large-3">Incident Location: ${incident.address}</div>`;
+                        const imageCell1 = `<div class="cell auto"><img src="${incident.image}"></div>`;
+                        const imageCell2 = `<div class="cell auto"><p><button class="button" data-open="locateonmap" data-location='{"lat": "${incident.latitude}", "lng": "${incident.longitude}"}'>Click me for a modal11</button></p></div>`;
+                        const notesCell = `<div class="cell">Notes: ${incident.notes}</div>`;
+                        const statusCell = `<div class="cell">Status: ${incident.status}</div>`;
+                        //Modal form
+                        const revealForm = `
+                        <div class="reveal" id="id-${incident.id}" data-reveal>
+                            <form id="incidentForm{{incident.id}}" enctype="multipart/form-data" name="incidentForm{{incident.id}}" action="/api/incident_update" method="POST">
+                            <input type="hidden" id="incidentId" name="id" value="${incident.id}">
+                            <div class="grid-x grid-padding-x">
+                                <div class="cell">
+                                <label>Email
+                                    <input id="email" name="email" value="${incident.email}" type="email" placeholder="Enter your email">
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Address
+                                    <input id="address" name="address" value="${incident.address}" type="text" placeholder="Enter your address">
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Location
+                                    <input id="location" name="location" value="${incident.location}" type="text" placeholder="Enter your location">
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Description
+                                    <textarea id="description" name="description" placeholder="Enter a description">${incident.description}</textarea>
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Notes
+                                    <textarea id="notes" name="notes" placeholder="Enter notes">${incident.notes}</textarea>
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class=" cell">
+                                <label>Status
+                                   <select id="status" name="status">
+                                    <option value="pending" ${incident.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="solved" ${incident.status === 'solved' ? 'selected' : ''}>Solved</option>
+                                    </select>
+                                </label>
+                                </div>
+                            </div>
+                            <div class="grid-x grid-padding-x">
+                                <div class="cell">
+                                <button type="submit" class="button">Submit</button>
+                                </div>
+                            </div>
+                            </form>
+                            <button class="close-button" data-close aria-label="Close modal" type="button">
+                            <span aria-hidden="true">&times;</span>
+                            </button>
+                            <button class="close-buttonx" data-close aria-label="Close modal" type="button">
+                            <span aria-hidden="true">No</span>
+                            </button>
+                        </div>
+                        <p><button class="button" data-open="id-${incident.id}">Click me for a modal</button></p>
+                        `;
+
+                        //Put it all together . The form is hidden by default
+                        row.innerHTML = `
+                        <div class="grid-x grid-padding-x" style="margin-bottom: 20px; background-color: rgb(241.3, 241.3, 241.3);">
+                            <div class="cell large-5">
+                            <div class="grid-y">
+                                ${emailCell}
+                                ${detailsCell}
+                            </div>
+                            </div>
+                            ${locationCell}
+                            ${imageCell1}
+                            ${imageCell2}
+                            ${notesCell}
+                            ${statusCell}
+                            <div>
+                            ${revealForm}
+                            </div>
+                        </div>
+                        `;
+                        incidentList.appendChild(row);
+                        var elem=$(`#id-`+incident.id); 
+                        new Foundation.Reveal(elem); // Initialise the reveal form to make modal work
+                        
+                        
+                    }); 
+                        
+                        
+                            map = L.map('modal-map').setView([51.5, -0.09], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        marker1 = L.marker([51.5, -0.09])
+        console.log(marker1)
+        var marker = L.marker([51.5, -0.09]).addTo(map);
+                        //Attac map location preview button 
+                        document.querySelectorAll('.button[data-open="locateonmap"]').forEach(button => {
+                        button.addEventListener('click', function() {
+                        const raw_location = this.getAttribute('data-location');
+                        
+                       const location= JSON.parse(raw_location);
+                        document.querySelector("#locateonmap h1").textContent = `Location: ${location.lat}`;
+
+                        document.querySelector("#locateonmap").setAttribute('data-location' , raw_location);
+                        
+                        });
+                    });
+                } catch (error) {
+                    console.error('Error fetching incidents:', error);
+                }
+            }
+        //Bug FIX: Leaflet map not showing properly in Modal (Due to  size change when modal opens)
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#locateonmap').on('open.zf.reveal', function(e) {  
+                map.invalidateSize();
+
+                const raw_location = this.getAttribute('data-location');
+                const location= JSON.parse(raw_location);
+        {{!-- marker.clearLayers();    --}}
+       {{!-- if (marker1) {
+            map.removeLayer(marker1);
+        } --}}
+        console.log(marker1)
+map.setView([location.lat, location.lng], 16);
+marker1.setLatLng([location.lat, location.lng]).addTo(map);
+ {{!-- var  marker = L.marker([location.lat, location.lng]).addTo(map); --}}
+                       {{!-- const location= JSON.parse(raw_location); --}}
+                        document.querySelector("#locateonmap p").textContent = `Locationxxx: ${location}`;
+
+            ;}) 
+        })          
+
+
+        fetchIncidents();
+ 
+   
+
+    
+</script>
+</body>
+</html>
+
+
+
