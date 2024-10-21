@@ -6,10 +6,11 @@
 
 </div>
 
-<div class="reveal" id="exampleModal1" data-reveal>
-    <h1>Awesome. I Have It.</h1>
+
+<div class="reveal" id="locateonmap" data-reveal>
+    <h1>exampleModal99</h1>
     <p class="lead">Your couch. It is mine.</p>
-    <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
+    <div id="modal-map" style="height: 180px;width: 100%;"></div>
     <button class="close-button" data-close aria-label="Close modal" type="button">
         <span aria-hidden="true">&times;</span>
     </button>
@@ -17,20 +18,13 @@
             <span aria-hidden="true">No</span>
         </button>
 </div>
-<p><button class="button" data-open="exampleModal1">Click me for a modal</button></p>
-<div class="reveal" id="exampleModal99" data-reveal>
-    <h1>999999Awesome. I Have It.</h1>
-    <p class="lead">Your couch. It is mine.</p>
-    <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
-    <button class="close-button" data-close aria-label="Close modal" type="button">
-        <span aria-hidden="true">&times;</span>
-    </button>
-        <button class="close-buttonx" data-close aria-label="Close modal" type="button">
-            <span aria-hidden="true">No</span>
-        </button>
-</div>
-<p><button class="button" data-open="exampleModal99">Click me for a modal99</button></p>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+    <!-- <script  src="scripts/locationPicker.js"></script> -->
+
+
 <script async>
+   
          async function fetchIncidents() {
                 try {
                     const response = await fetch('http://localhost:8000/api/incidents');
@@ -46,7 +40,7 @@
                         const detailsCell = `<div class="cell">Incident Details: ${incident.description}</div>`;
                         const locationCell = `<div class="cell large-3">Incident Location: ${incident.address}</div>`;
                         const imageCell1 = `<div class="cell auto"><img src="${incident.image}"></div>`;
-                        const imageCell2 = `<div class="cell auto"><img src="https://get.foundation/sites/docs-v5/assets/img/examples/satelite.jpg"></div>`;
+                        const imageCell2 = `<div class="cell auto"><p><button class="button" data-open="locateonmap" data-location='{"lat": "${incident.latitude}", "lng": "${incident.longitude}"}'>Click me for a modal11</button></p></div>`;
                         const notesCell = `<div class="cell">Notes: ${incident.notes}</div>`;
                         const statusCell = `<div class="cell">Status: ${incident.status}</div>`;
                         //Modal form
@@ -135,14 +129,62 @@
                         </div>
                         `;
                         incidentList.appendChild(row);
-                        var elem=$(`#id-`+incident.id); new Foundation.Reveal(elem); // Initialise the reveal form to make modal work
+                        var elem=$(`#id-`+incident.id); 
+                        new Foundation.Reveal(elem); // Initialise the reveal form to make modal work
+                        
+                        
                     }); 
+                        
+                        
+                            map = L.map('modal-map').setView([51.5, -0.09], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        marker1 = L.marker([51.5, -0.09])
+        console.log(marker1)
+        var marker = L.marker([51.5, -0.09]).addTo(map);
+                        //Attac map location preview button 
+                        document.querySelectorAll('.button[data-open="locateonmap"]').forEach(button => {
+                        button.addEventListener('click', function() {
+                        const raw_location = this.getAttribute('data-location');
+                        
+                       const location= JSON.parse(raw_location);
+                        document.querySelector("#locateonmap h1").textContent = `Location: ${location.lat}`;
+
+                        document.querySelector("#locateonmap").setAttribute('data-location' , raw_location);
+                        
+                        });
+                    });
                 } catch (error) {
                     console.error('Error fetching incidents:', error);
                 }
             }
+        //Bug FIX: Leaflet map not showing properly in Modal (Due to  size change when modal opens)
+        document.addEventListener('DOMContentLoaded', function() {
+            $('#locateonmap').on('open.zf.reveal', function(e) {  
+                map.invalidateSize();
 
-      const test=fetchIncidents();
+                const raw_location = this.getAttribute('data-location');
+                const location= JSON.parse(raw_location);
+        {{!-- marker.clearLayers();    --}}
+       {{!-- if (marker1) {
+            map.removeLayer(marker1);
+        } --}}
+        console.log(marker1)
+map.setView([location.lat, location.lng], 16);
+marker1.setLatLng([location.lat, location.lng]).addTo(map);
+ {{!-- var  marker = L.marker([location.lat, location.lng]).addTo(map); --}}
+                       {{!-- const location= JSON.parse(raw_location); --}}
+                        document.querySelector("#locateonmap p").textContent = `Locationxxx: ${location}`;
+
+            ;}) 
+        })          
+
+
+        fetchIncidents();
+ 
+   
 
     
 </script>
