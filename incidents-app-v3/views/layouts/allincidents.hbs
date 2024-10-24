@@ -27,7 +27,7 @@
    
          async function fetchIncidents() {
                 try {
-                    const response = await fetch('http://localhost:8000/api/incidents');
+                    const response = await fetch('http://localhost:8000/api/members/incidents');
                     const incidents = await response.json();
                     const incidentList = document.getElementById('incident-list');
                     incidents.forEach(incident => {
@@ -46,7 +46,7 @@
                         //Modal form
                         const revealForm = `
                         <div class="reveal" id="id-${incident.id}" data-reveal>
-                            <form id="incidentForm{{incident.id}}" enctype="multipart/form-data" name="incidentForm{{incident.id}}" action="/api/incident_update" method="POST">
+                            <form id="incidentForm{{incident.id}}" enctype="multipart/form-data" name="incidentForm{{incident.id}}" action="/api/members/incident_update" method="POST">
                             <input type="hidden" id="incidentId" name="id" value="${incident.id}">
                             <div class="grid-x grid-padding-x">
                                 <div class="cell">

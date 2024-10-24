@@ -10,7 +10,7 @@ export const COOKIE_AGE = 60 * 60 * 24;
 export const PROTECTED_PATHS = [
   "/admin",
   "/members",
-  "/api/incidents",
+  "/api/members",
 ];
 export const LOGIN_REDIRECT = "/login.html";
 export const key = await crypto.subtle.generateKey(
