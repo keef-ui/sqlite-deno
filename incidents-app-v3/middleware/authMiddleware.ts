@@ -12,7 +12,7 @@ export const PROTECTED_PATHS = [
   "/members",
   "/api/members",
 ];
-export const LOGIN_REDIRECT = "/login.html";
+export const LOGIN_REDIRECT = "/login";
 export const key = await crypto.subtle.generateKey(
   { name: "HMAC", hash: "SHA-512" },
   true,

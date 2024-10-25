@@ -1,5 +1,4 @@
 import { create } from "https://deno.land/x/djwt/mod.ts";
-import { router } from "../jwttest";
 import { key, COOKIE_AGE } from "../middleware/authMiddleware";
 
 
@@ -31,3 +30,10 @@ export const login = async (ctx) => {
     ctx.response.body = { message: "Invalid request body" };
   }
 };
+
+// Logout route
+export const logout = async (ctx: RouterContext) => {
+    // Remove the JWT token
+    await ctx.cookies.delete("token", { path: "/" });
+    ctx.response.body = { message: "Logout successful" };
+};  

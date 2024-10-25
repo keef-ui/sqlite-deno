@@ -70,3 +70,11 @@ try {
     };
 }
 };
+
+export const loginPage = async (ctx) => {
+    console.log("/login....");
+    const html = await handle.renderView("login", {}, "main");
+  
+    ctx.response.body = html;
+    // ctx.response.redirect("/members/index.html");
+  };
