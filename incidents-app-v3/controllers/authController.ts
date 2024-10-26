@@ -35,5 +35,6 @@ export const login = async (ctx) => {
 export const logout = async (ctx: RouterContext) => {
     // Remove the JWT token
     await ctx.cookies.delete("token", { path: "/" });
-    ctx.response.body = { message: "Logout successful" };
+    // ctx.response.body = { message: "Logout successful" };
+    ctx.response.redirect("/login");
 };  

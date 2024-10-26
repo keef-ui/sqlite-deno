@@ -1,6 +1,10 @@
 <div id="membersPage" class="grid-container"/>
-  
-    <h2>All Incidents</h2>
+
+  <h2>All Incidents 
+  <form action="/logout" method="get" style="display:inline;">
+    <button type="submit" class="button small hollow">Logout</button>
+  </form>
+</h2>
 
     <div id="incident-list" >
   
@@ -19,6 +23,24 @@
             </button>
     </div>
 </div>
+<style>
+    #incident-list span{
+
+
+         font-weight: bold;
+    }
+     #incident-list  span:not(.inline){
+        display: block;
+    }
+    #incident-list .cell.image{
+        text-align: center;
+    }
+     #incident-list .cell.image img{
+        width: 40%;
+
+     }
+
+</style>
 
 
 

@@ -36,13 +36,14 @@
                         incident.notes=(incident.notes ? incident.notes : '')//if no notes, make it blank
                      
                         //Table data
-                        const emailCell = `<div class="cell">Email: ${incident.email}</div>`;
-                        const detailsCell = `<div class="cell">Incident Details: ${incident.description}</div>`;
-                        const locationCell = `<div class="cell large-3">Incident Location: ${incident.address}</div>`;
-                        const imageCell1 = `<div class="cell auto"><img src="${incident.image}"></div>`;
-                        const imageCell2 = `<div class="cell auto"><p><button class="button" data-open="locateonmap" data-location='{"lat": "${incident.latitude}", "lng": "${incident.longitude}"}'>Click for map</button></p></div>`;
-                        const notesCell = `<div class="cell">Notes: ${incident.notes}</div>`;
-                        const statusCell = `<div class="cell">Status: ${incident.status}</div>`;
+                        const emailCell = `<div class="cell"><span class="inline">Email:</span> ${incident.email}</div>`;
+                        const dateCell = `<div class="cell"><span class="inline">Date:</span> ${new Date(incident.timestamp).toLocaleString('en-GB')}</div>`;
+                        const detailsCell = `<div class="cell"><span>Incident Details:</span> ${incident.description}</div>`;
+                        const locationCell = `<div class="cell large-3"><span>Incident Location:</span> ${incident.address}<p><button class="button" data-open="locateonmap" data-location='{"lat": "${incident.latitude}", "lng": "${incident.longitude}"}'>Click for map</button></p></div>`;
+                        const imageCell1 = `<div class="cell auto  image"><img src="${incident.image}"></div>`;
+                        {{!-- const imageCell2 = `<div class="cell auto"><p><button class="button" data-open="locateonmap" data-location='{"lat": "${incident.latitude}", "lng": "${incident.longitude}"}'>Click for map</button></p></div>`; --}}
+                        const notesCell = `<div class="cell large-5"><span>Notes:</span> ${incident.notes}</div>`;
+                        const statusCell = `<div class="cell large-3"><span class="inline">Status:</span> ${incident.status}</div>`;
                         //Modal form
                         const revealForm = `
                         <div class="reveal" id="id-${incident.id}" data-reveal>
@@ -106,7 +107,7 @@
                             <span aria-hidden="true">No</span>
                             </button>
                         </div>
-                        <p><button class="button" data-open="id-${incident.id}">Click me for a modal</button></p>
+                        <p><button class="button" data-open="id-${incident.id}">Edit Incident</button></p>
                         `;
 
                         //Put it all together . The form is hidden by default
@@ -115,15 +116,15 @@
                             <div class="cell large-5">
                             <div class="grid-y">
                                 ${emailCell}
+                                ${dateCell}
                                 ${detailsCell}
                             </div>
                             </div>
                             ${locationCell}
                             ${imageCell1}
-                            ${imageCell2}
                             ${notesCell}
                             ${statusCell}
-                            <div>
+                            <div class='cell large-12'>
                             ${revealForm}
                             </div>
                         </div>
