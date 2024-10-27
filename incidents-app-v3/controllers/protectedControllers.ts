@@ -64,5 +64,39 @@ export const membersPage = async (ctx) => {
     }
   }
 
+  export const deleteIncident = async (ctx) => {
+    console.log("/api/incidents/delete....deleting incident");
+    
+    // Extract ID from URL params
+    const { id } = ctx.params;
+  
+    if (!id) {
+      ctx.response.status = 400;
+      ctx.response.body = { message: "ID is required" };
+      return;
+    }
+  
+    await Model.initialize(db_connectionString);
+    class Incident extends Model {
+      static tableName = db_table;
+    }
+  
+    // Check if the record exists
+    const incident = await Incident.find(id);
+  
+    if (!incident) {
+      ctx.response.status = 404;
+      ctx.response.body = { message: "Incident not found" };
+      return;
+    }
+  
+    // Delete the record
+    await Incident.delete(id);
+  
+    console.log(`Incident with ID ${id} deleted`);
+    // ctx.response.body = { message: `Incident with ID ${id} deleted` };
+    ctx.response.redirect("/members");
+  };
+  
 
 
