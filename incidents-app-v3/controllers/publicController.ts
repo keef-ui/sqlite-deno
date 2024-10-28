@@ -3,7 +3,16 @@ import { uploadPromiseDenoCloudinary } from "../../cloudinary/uploadPromiseDenoC
 import { Model } from "../../db/orm-buggy";
 import { router, db_connectionString, db_table } from "../jwttest";
 
+
+
+
 const handle = new Handlebars(); //Templating with handlebars (Refer to folders : views->Layouts|Partials|Pages)
+
+
+// handle.registerHelper("ifEquals", (arg1, arg2, options) => {
+//   return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
+// });
+
 //landing page
 export const landingPage = async (ctx) => {
     const html = await handle.renderView("home_page", {}, "home_page");
@@ -74,6 +83,22 @@ try {
 export const loginPage = async (ctx) => {
     console.log("/login....");
     const html = await handle.renderView("login", {}, "main");
+  
+    ctx.response.body = html;
+    // ctx.response.redirect("/members/index.html");
+  };
+
+  export const testPage = async (ctx) => {
+    console.log("/testpage....render all incidents with handlebars");
+    await Model.initialize(db_connectionString);
+    class Incident extends Model {
+      static tableName = db_table;
+    }
+  
+    const incidents = await Incident.findAll();
+    console.log(incidents);
+
+    const html = await handle.renderView("test-in-v", {incidents}, "test-inc-l");
   
     ctx.response.body = html;
     // ctx.response.redirect("/members/index.html");

@@ -1,0 +1,138 @@
+ <div id="membersPage" class="grid-container"/>
+   <h2>All Incidents 
+  <form action="/logout" method="get" style="display:inline;">
+    <button type="submit" class="button small hollow">Logout</button>
+  </form>
+</h2>
+
+  <div id="incident-list" >
+{{#each incidents}}
+  <div class="grid-x grid-padding-x" style="margin-bottom: 20px; background-color: rgb(241.3, 241.3, 241.3);">
+    <div class="cell large-5">
+      <div class="grid-y">
+        <div class="cell"><span class="inline">Email:</span> {{SQLiteCloudRow.email}}</div>
+        <div class="cell"><span class="inline">Date:</span> {{SQLiteCloudRow.timestamp}}</div>
+        <div class="cell"><span>Incident Details:</span> {{SQLiteCloudRowdescription}}</div>
+      </div>
+    </div>
+    <div class="cell large-3"><span>Incident Location:</span> {{address}}
+      <p><button class="button" data-open="locateonmap" data-location='{"lat": "{{latitude}}", "lng": "{{longitude}}"}'>Click for map</button></p>
+    </div>
+    <div class="cell auto image"><img src="{{image}}"></div>
+    <div class="cell large-5"><span>Notes:</span> {{#if notes}}{{notes}}{{else}}No notes available{{/if}}</div>
+    <div class="cell large-3"><span class="inline">Status:</span> {{status}}</div>
+    <div class='cell large-12'>
+      <div class="reveal" id="id-{{id}}" data-reveal>
+        <form id="incidentForm{{id}}" enctype="multipart/form-data" name="incidentForm{{id}}" action="/api/members/incident_update" method="POST">
+          <input type="hidden" id="incidentId" name="id" value="{{id}}">
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <label>Email
+                <input id="email" name="email" value="{{email}}" type="email" placeholder="Enter your email">
+              </label>
+            </div>
+          </div>
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <label>Address
+                <input id="address" name="address" value="{{address}}" type="text" placeholder="Enter your address">
+              </label>
+            </div>
+          </div>
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <label>Location
+                <input id="location" name="location" value="{{location}}" type="text" placeholder="Enter your location">
+              </label>
+            </div>
+          </div>
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <label>Description
+                <textarea id="description" name="description" placeholder="Enter a description">{{description}}</textarea>
+              </label>
+            </div>
+          </div>
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <label>Notes
+                <textarea id="notes" name="notes" placeholder="Enter notes">{{notes}}</textarea>
+              </label>
+            </div>
+          </div>
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <label>Status
+                <select id="status" name="status">
+                  <option value="pending" {{#ifEquals status 'pending'}}selected{{/ifEquals}}>Pending</option>
+                  <option value="solved" {{#ifEquals status 'solved'}}selected{{/ifEquals}}>Solved</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="grid-x grid-padding-x">
+            <div class="cell">
+              <button type="submit" class="button">Submit</button>
+            </div>
+          </div>
+        </form>
+        <button class="close-button" data-close aria-label="Close modal" type="button">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <button class="close-buttonx" data-close aria-label="Close modal" type="button">
+          <span aria-hidden="true">No</span>
+        </button>
+      </div>
+      <p><button class="button" data-open="id-{{id}}">Edit Incident</button></p>
+      <form action="/api/members/delete/{{id}}" method="post" onsubmit="return confirm('Are you sure you want to delete this incident?');" style="display:inline;">
+  <input type="hidden" name="_method" value="delete">
+  <button type="submit" class="button alert">Delete</button>
+</form>
+    </div>
+  </div>
+{{/each}}
+  
+  
+    </div>
+    </div>
+
+    <style>
+    #incident-list span{
+
+
+         font-weight: bold;
+    }
+     #incident-list  span:not(.inline){
+        display: block;
+    }
+    #incident-list .cell.image{
+        text-align: center;
+    }
+     #incident-list .cell.image img{
+        width: 40%;
+
+     }
+
+</style>
+
+
+<script>
+document.addEventListener('submit', function(event) {
+  if (event.target.matches('form[method="post"]')) {
+    const methodInput = event.target.querySelector('input[name="_method"]');
+    if (methodInput && methodInput.value.toLowerCase() === 'delete') {
+      event.preventDefault();
+      fetch(event.target.action, {
+        method: 'DELETE',
+        body: new FormData(event.target)
+      }).then(response => response.json())
+      .then(data => {
+        if (data.message) {
+          alert(data.message);
+          window.location.reload(); // Reload the page after deletion
+        }
+      });
+    }
+  }
+});
+</script>
