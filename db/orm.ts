@@ -49,6 +49,27 @@ export class Model {
     await this.database.sql(query, ...values);
     console.log(`Record inserted into '${this.tableName}' successfully.`);
   }
+
+  static async delete(id: string | number) {
+    if (!id) {
+      console.log("No ID provided. Record not deleted.");
+      return;
+    }
+  
+    const existingRecord = await this.findBy({ id });
+    if (existingRecord.length === 0) {
+      console.log(`Record with ID '${id}' does not exist. Deletion not performed.`);
+      return;
+    }
+  
+    const query = `DELETE FROM ${this.tableName} WHERE id = ?`;
+    const result = await this.database.sql(query, id);
+  
+    console.log(`Record with ID '${id}' deleted successfully.`);
+    return result;
+  }
+  
+
   static async deleteTable() {
     try {
       const query = `DROP TABLE IF EXISTS ${this.tableName}`;
