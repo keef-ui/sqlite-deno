@@ -1,17 +1,22 @@
 import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { uploadPromiseDenoCloudinary } from "../../cloudinary/uploadPromiseDenoCloudinary";
-import { Model } from "../../db/orm-buggy";
+import { Model_sqlite_cloud as Model } from "../../db/orm-core";
 import { router, db_connectionString, db_table } from "../jwttest";
 
 
 
+//Handlebars cobfig - Add custom helper functions here
+const config = {
+  helpers: {
+    ifEquals: (arg1, arg2, options) => { //Set Select input field 
+      return  (arg1 === arg2) ? options.fn(this) : options.inverse(this);
+    },
+  },
 
-const handle = new Handlebars(); //Templating with handlebars (Refer to folders : views->Layouts|Partials|Pages)
+}
 
+const handle = new Handlebars(config); //Templating with handlebars (Refer to folders : views->Layouts|Partials|Pages)
 
-// handle.registerHelper("ifEquals", (arg1, arg2, options) => {
-//   return (arg1 === arg2) ? options.fn(this) : options.inverse(this);
-// });
 
 //landing page
 export const landingPage = async (ctx) => {

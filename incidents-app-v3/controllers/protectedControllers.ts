@@ -1,5 +1,5 @@
 import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
-import { Model } from "../../db/orm-buggy";
+import { Model_sqlite_cloud as Model } from "../../db/orm-core";
 import { router, db_connectionString, db_table } from "../jwttest";
 
 const handle = new Handlebars(); //Templating with handlebars (Refer to folders : views->Layouts|Partials|Pages)
@@ -66,9 +66,13 @@ export const membersPage = async (ctx) => {
 
   export const deleteIncident = async (ctx) => {
     console.log("/api/incidents/delete....deleting incident");
-    
     // Extract ID from URL params
-    const { id } = ctx.params;
+    const body = ctx.request.body({ type: "form-data" });
+    const formData = await body.value.read({ maxSize: 10 * 1024 * 1024 }); // 10 MB limit
+
+    console.log("fields: ", formData.fields);
+
+    const id=formData.fields.id;
   
     if (!id) {
       ctx.response.status = 400;
@@ -82,7 +86,7 @@ export const membersPage = async (ctx) => {
     }
   
     // Check if the record exists
-    const incident = await Incident.find(id);
+    const incident = await Incident.findBy({id:id});
   
     if (!incident) {
       ctx.response.status = 404;
@@ -91,9 +95,9 @@ export const membersPage = async (ctx) => {
     }
   
     // Delete the record
-    await Incident.delete(id);
+    const result = await Incident.delete(id);
   
-    console.log(`Incident with ID ${id} deleted`);
+    console.log({result});
     // ctx.response.body = { message: `Incident with ID ${id} deleted` };
     ctx.response.redirect("/members");
   };

@@ -12,6 +12,6 @@ router.get("/api/members/incidents",getIncidents );
 
 // Incident update route
 router.post("/api/members/incident_update",updateIncident );
-router.delete("/api/members/delete/:id", deleteIncident);
+router.post("/api/members/delete", deleteIncident);
 
 export default router;
