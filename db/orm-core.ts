@@ -3,6 +3,10 @@ import "jsr:@std/dotenv/load";
 
 /**
  * ORM Model to use with SQLite Cloud
+ * // This model is to be used for sqlite_Cloud: Import like:
+ * import { Model} from './path/to/your/orm-core.ts';
+ *          OR if using sqlite Cloud use:
+ * import { Model_sqlite_cloud as Model} from './path/to/your/orm-core.ts';
  * 
  * Example usage:
  * 
@@ -15,6 +19,8 @@ import "jsr:@std/dotenv/load";
  * await Model.initialize('sqlite:///path/to/database.sqlite');
  * 
 **/
+
+
 export class Model {
   static database: Database;
   static tableName: string;
@@ -45,7 +51,48 @@ export class Model {
     await this.database.sql(query, ...values);
     console.log(`Record inserted into '${this.tableName}' successfully.`);
   }
-
+  static async update(data: { [key: string]: any }) {
+    if (!data.id) {
+      console.log("No ID provided. Record not updated.");
+      return;
+    }
+  
+    const existingRecord = await this.findBy({ id: data.id });
+    if (existingRecord.length === 0) {
+      console.log(`Record with ID '${data.id}' does not exist. Update not performed.`);
+      return;
+    }
+  
+    const columns = Object.keys(data)
+      .filter(key => key !== 'id')
+      .map(key => `${key} = ?`)
+      .join(', ');
+    const values = Object.values(data).filter(value => value !== data.id);
+    const query = `UPDATE ${this.tableName} SET ${columns} WHERE id = ?`;
+    
+    const result =await this.database.sql(query, ...values, data.id);
+    console.log(`Record with ID '${data.id}' updated successfully.`);
+    return result
+  }
+  //Delete record
+  static async delete(id: string | number) {
+    if (!id) {
+      console.log("No ID provided. Record not deleted.");
+      return;
+    }
+  
+    const existingRecord = await this.findBy({ id });
+    if (existingRecord.length === 0) {
+      console.log(`Record with ID '${id}' does not exist. Deletion not performed.`);
+      return;
+    }
+  
+    const query = `DELETE FROM ${this.tableName} WHERE id = ?`;
+    const result = await this.database.sql(query, id);
+  
+    console.log(`Record with ID '${id}' deleted successfully.`);
+    return result;
+  }
   // Delete the table
   static async deleteTable() {
     try {
@@ -91,6 +138,16 @@ export class Model {
     } catch (error) {
       console.error(`Error describing table '${this.tableName}':`, error);
     }
+  }
+}
+
+export class Model_sqlite_cloud extends Model {
+// This model is to be used for sqlite_Cloud: Import like:
+// import { Model_sqlite_cloud as Model} from './path/to/your/orm-core.ts';
+  static async initialize(connectionString: string) {
+    this.database = new Database({connectionstring: connectionString,
+      usewebsocket: true,
+      verbose: true});
   }
 }
 
