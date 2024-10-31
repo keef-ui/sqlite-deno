@@ -20,6 +20,51 @@
     <script src="/js/foundation.js"></script>
     <script src="/js/app.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+
+      <script>
+
+map = L.map('modal-map').setView([51.5, -0.09], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        marker1 = L.marker([51.5, -0.09])
+        console.log(marker1)
+        var marker = L.marker([51.5, -0.09]).addTo(map);
+                        //Attac map location preview button 
+                        document.querySelectorAll('.button[data-open="locateonmap"]').forEach(button => {
+                        button.addEventListener('click', function() {
+                        const raw_location = this.getAttribute('data-location');
+                        
+                       const location= JSON.parse(raw_location);
+                        document.querySelector("#locateonmap h1").textContent = `Location: ${location.lat}`;
+
+                        document.querySelector("#locateonmap").setAttribute('data-location' , raw_location);
+                        
+                        });
+                    });
+
+                          document.addEventListener('DOMContentLoaded', function() {
+            $('#locateonmap').on('open.zf.reveal', function(e) {  
+                map.invalidateSize();
+
+                const raw_location = this.getAttribute('data-location');
+                const location= JSON.parse(raw_location);
+        {{!-- marker.clearLayers();    --}}
+       {{!-- if (marker1) {
+            map.removeLayer(marker1);
+        } --}}
+        console.log(marker1)
+map.setView([location.lat, location.lng], 16);
+marker1.setLatLng([location.lat, location.lng]).addTo(map);
+ {{!-- var  marker = L.marker([location.lat, location.lng]).addTo(map); --}}
+                       {{!-- const location= JSON.parse(raw_location); --}}
+                        document.querySelector("#locateonmap p").textContent = `Locationxxx: ${location}`;
+
+            ;}) 
+        })
+
+</script>
     <!-- <script  src="scripts/locationPicker.js"></script> -->
 
 

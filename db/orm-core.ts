@@ -5,7 +5,7 @@ import "jsr:@std/dotenv/load";
  * ORM Model to use with SQLite Cloud
  * // This model is to be used for sqlite_Cloud: Import like:
  * import { Model} from './path/to/your/orm-core.ts';
- *          OR if using sqlite Cloud use:
+ *          OR if using sqlite Cloud withh Deno use:
  * import { Model_sqlite_cloud as Model} from './path/to/your/orm-core.ts';
  * 
  * Example usage:
