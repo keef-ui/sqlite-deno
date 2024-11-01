@@ -11,6 +11,11 @@ const config = {
     ifEquals: (arg1, arg2, options) => { //Set Select input field 
       return  (arg1 === arg2) ? options.fn(this) : options.inverse(this);
     },
+    formatDateUK: (datetime) => { //Set Select input field 
+      const date = new Date(datetime); 
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }; 
+      return date.toLocaleDateString('en-GB', options);
+    },
   },
 
 }
@@ -102,8 +107,8 @@ export const loginPage = async (ctx) => {
   
     const incidents = await Incident.findAll();
     console.log(incidents);
-
-    const html = await handle.renderView("test-in-v", {incidents}, "test-inc-l");
+   
+    const html = await handle.renderView("test-in-v", {incidents,title:"All incidents"}, "test-inc-l");
   
     ctx.response.body = html;
     // ctx.response.redirect("/members/index.html");

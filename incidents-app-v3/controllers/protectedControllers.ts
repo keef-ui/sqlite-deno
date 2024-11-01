@@ -2,6 +2,17 @@ import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { Model_sqlite_cloud as Model } from "../../db/orm-core";
 import { router, db_connectionString, db_table } from "../jwttest";
 
+
+const config = {
+  helpers: {
+    formatDateUK: (datetime) => { //Set Select input field 
+      const date = new Date(datetime); 
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }; 
+      return date.toLocaleDateString('en-GB', options);
+    },
+  },
+
+}
 const handle = new Handlebars(); //Templating with handlebars (Refer to folders : views->Layouts|Partials|Pages)
 export const membersPage = async (ctx) => {
     const html = await handle.renderView("allincidents", {}, "allincidents");

@@ -4,7 +4,6 @@ import {
 } from "https://deno.land/x/oak@v12.6.1/mod.ts";
 import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { v2 as cloudinary } from "npm:cloudinary";
-// import { Model } from "../db/orm.ts";
 import "jsr:@std/dotenv/load";
 import { protectedPathMiddleware} from "./middleware/authMiddleware.ts";
 import authRoutes from "./routes/authRoutes.ts";
