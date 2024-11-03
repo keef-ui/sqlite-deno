@@ -2,6 +2,7 @@ import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { uploadPromiseDenoCloudinary } from "../../cloudinary/uploadPromiseDenoCloudinary";
 import { Model_sqlite_cloud as Model } from "../../db/orm-core";
 import { router, db_connectionString, db_table } from "../jwttest";
+import { Model_sqlite_cloud as Modeltest } from "../../db/orm-test";
 
 
 
@@ -16,6 +17,7 @@ const config = {
       const options = { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }; 
       return date.toLocaleDateString('en-GB', options);
     },
+    ifEquals: (arg1, arg2, options) => { return (arg1 === arg2) ? options.fn(this) : options.inverse(this); }
   },
 
 }
@@ -99,16 +101,23 @@ export const loginPage = async (ctx) => {
   };
 
   export const testPage = async (ctx) => {
-    console.log("/testpage....render all incidents with handlebars");
-    await Model.initialize(db_connectionString);
-    class Incident extends Model {
+    const range = ctx.request.url.searchParams.get("range")|| "all";
+    console.log("/testpage....render all incidents with handlebars ",range);
+
+    await Modeltest.initialize(db_connectionString);
+    class Incident extends Modeltest {
       static tableName = db_table;
     }
-  
-    const incidents = await Incident.findAll();
-    console.log(incidents);
-   
-    const html = await handle.renderView("test-in-v", {incidents,title:"All incidents"}, "test-inc-l");
+    let incidents;
+    if (range === "week") {
+      incidents = await Incident.findThisWeek();      
+    } else if (range === "month")  {
+      incidents = await Incident.findThisMonth();
+    } else {
+      incidents = await Incident.findAll();
+    }
+    // console.log(incidents);
+    const html = await handle.renderView("test-in-v", {incidents,title:"All incidents",range}, "test-inc-l");
   
     ctx.response.body = html;
     // ctx.response.redirect("/members/index.html");

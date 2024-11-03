@@ -58,6 +58,7 @@ export const membersPage = async (ctx) => {
         description: formData.fields.description || "No description provided",
         address: formData.fields.address || "No address provided",
         notes: formData.fields.notes || "No address provided",
+        status: formData.fields.status
       });
   
       // Return success response

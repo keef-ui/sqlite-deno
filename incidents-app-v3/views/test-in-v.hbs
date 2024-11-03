@@ -5,6 +5,8 @@
 </form>
 </h2>
 
+<nav> <ul class="menu"> <li class="{{#ifEquals range 'all'}}is-active{{/ifEquals}}"><a href="/test">All Incidents</a></li> <li class="{{#ifEquals range 'week'}}is-active{{/ifEquals}}"><a href="/test?range=week">Incidents for This Week</a></li> <li class="{{#ifEquals range 'month'}}is-active{{/ifEquals}}"><a href="/test?range=month">Incidents for This Month</a></li> </ul> </nav>
+
 <div id="incident-list" >
 {{#each incidents}}
 <div class="grid-x grid-padding-x" style="margin-bottom: 20px; background-color: rgb(241.3, 241.3, 241.3);">
@@ -127,6 +129,10 @@
    margin-left:0.8rem;
   }
 #locateonmap .text {font-weight: bold;}
+
+nav{
+  margin: 1rem 0;
+}
 </style>
 
 
