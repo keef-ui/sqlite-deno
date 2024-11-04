@@ -20,7 +20,13 @@
 </form>
 <img id="imagePreview" src="" alt="Image preview" style="display: none" />
 <div class="=result" id="uploadResult"></div>
+<div class="tiny reveal" id="alertbox" data-reveal>
+  <div class="callout success">
 
+    <p>Great, your form was accepted</p>
+  
+  </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
 <!-- <script  src="scripts/locationPicker.js"></script> -->
 
@@ -28,7 +34,7 @@
     //Lcation picker needs refactor, it needs the form update stuff taken out, insted pass in the form DOM data
   import LocationPicker from "./scripts/locationPicker.js";
   
-  const $ = document.querySelector;
+
 
   const imageInput = document.getElementById("imageInput");
   const imagePreview = document.getElementById("imagePreview");
@@ -87,6 +93,14 @@
                     <p>Longitude: ${data.longitude}</p>
                     
                 `;
+                
+      
+            $('#alertbox').foundation('open'); 
+            setTimeout(function() { 
+              $('#alertbox').foundation('close');
+              window.location.reload(); 
+              }, 3000)
+            
         } else {
           throw new Error(data.message || "Upload failed");
         }
