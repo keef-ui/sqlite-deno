@@ -1,7 +1,7 @@
 import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { Model_sqlite_cloud as Model } from "../../db/orm-core";
 import { router, db_connectionString, db_table } from "../jwttest";
-import { Model_sqlite_cloud as Modeltest } from "../../db/orm-test";
+
 
 
 //Handlebars cobfig - Add custom helper functions here
@@ -26,8 +26,8 @@ export const membersPage = async (ctx) => {
   const range = ctx.request.url.searchParams.get("range")|| "all";
   console.log("/testpage....render all incidents with handlebars ",range);
 
-  await Modeltest.initialize(db_connectionString);
-  class Incident extends Modeltest {
+  await Model.initialize(db_connectionString);
+  class Incident extends Model {
     static tableName = db_table;
   }
   let incidents;
