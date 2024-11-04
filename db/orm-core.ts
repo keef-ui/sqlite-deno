@@ -149,7 +149,42 @@ export class Model_sqlite_cloud extends Model {
       usewebsocket: true,
       verbose: true});
   }
-}
 
+
+  // Find incidents this week
+  static async findThisWeek() {
+    const { startOfWeek, endOfWeek } = this.getWeekRange();
+    return await this.database.sql(`SELECT * FROM ${this.tableName} WHERE timestamp BETWEEN ? AND ?`, startOfWeek.toISOString(), endOfWeek.toISOString());
+  }
+
+  // Find incidents this month
+  static async findThisMonth() {
+    const { startOfMonth, endOfMonth } = this.getMonthRange();
+    return await this.database.sql(`SELECT * FROM ${this.tableName} WHERE timestamp BETWEEN ? AND ?`, startOfMonth.toISOString(), endOfMonth.toISOString());
+  }
+
+  // Helper function to get the start and end of the current week
+  static getWeekRange() {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const startOfWeek = new Date(now.setDate(now.getDate() - dayOfWeek));
+    startOfWeek.setHours(0, 0, 0, 0);
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 7);
+    endOfWeek.setHours(23, 59, 59, 999);
+    return { startOfWeek, endOfWeek };
+  }
+
+  // Helper function to get the start and end of the current month
+  static getMonthRange() {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    startOfMonth.setHours(0, 0, 0, 0);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    endOfMonth.setHours(23, 59, 59, 999);
+    return { startOfMonth, endOfMonth };
+  }
+
+}
 
 

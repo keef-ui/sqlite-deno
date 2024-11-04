@@ -5,7 +5,7 @@
 </form>
 </h2>
 
-<nav> <ul class="menu"> <li class="{{#ifEquals range 'all'}}is-active{{/ifEquals}}"><a href="/test">All Incidents</a></li> <li class="{{#ifEquals range 'week'}}is-active{{/ifEquals}}"><a href="/test?range=week">Incidents for This Week</a></li> <li class="{{#ifEquals range 'month'}}is-active{{/ifEquals}}"><a href="/test?range=month">Incidents for This Month</a></li> </ul> </nav>
+<nav> <ul class="menu"> <li class="{{#ifEquals range 'all'}}is-active{{/ifEquals}}"><a href="/members">All Incidents</a></li> <li class="{{#ifEquals range 'week'}}is-active{{/ifEquals}}"><a href="/members?range=week">Incidents for This Week</a></li> <li class="{{#ifEquals range 'month'}}is-active{{/ifEquals}}"><a href="/members?range=month">Incidents for This Month</a></li> </ul> </nav>
 
 <div id="incident-list" >
 {{#each incidents}}

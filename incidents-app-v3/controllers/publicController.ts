@@ -117,7 +117,7 @@ export const loginPage = async (ctx) => {
       incidents = await Incident.findAll();
     }
     // console.log(incidents);
-    const html = await handle.renderView("test-in-v", {incidents,title:"All incidents",range}, "test-inc-l");
+    const html = await handle.renderView("members_page", {incidents,title:"All incidents",range}, "members_page");
   
     ctx.response.body = html;
     // ctx.response.redirect("/members/index.html");
