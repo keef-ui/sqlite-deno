@@ -33,7 +33,7 @@ import { fetchLocationData } from "./fetch_location.js";
         latitudeInput.value = lat;
         longitudeInput.value = lng;
         addressField.value = ` ${address.street},  ${address.city}, postcode: ${address.postcode}`;
-        saveButton.disabled = false;
+        // saveButton.disabled = false;
     }
 
 
