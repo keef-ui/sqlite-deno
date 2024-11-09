@@ -41,10 +41,9 @@ async function authMiddleware(ctx: any, next: () => Promise<void>) {
     ctx.response.redirect(LOGIN_REDIRECT);
   }
 }
-// Middleware to serve static files
+// Middleware to serve protected static files
 export async function protectedPathMiddleware(ctx: any, next: () => Promise<void>) {
   const path = ctx.request.url.pathname;
-  // console.log("protectedPathMiddleware :",path)
   // List of protected paths
   const protectedPaths = PROTECTED_PATHS;
 

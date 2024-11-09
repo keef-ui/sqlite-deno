@@ -151,17 +151,24 @@ export class Model_sqlite_cloud extends Model {
   }
 
 
-  // Find incidents this week
-  static async findThisWeek() {
-    const { startOfWeek, endOfWeek } = this.getWeekRange();
-    return await this.database.sql(`SELECT * FROM ${this.tableName} WHERE timestamp BETWEEN ? AND ?`, startOfWeek.toISOString(), endOfWeek.toISOString());
-  }
-
-  // Find incidents this month
-  static async findThisMonth() {
-    const { startOfMonth, endOfMonth } = this.getMonthRange();
-    return await this.database.sql(`SELECT * FROM ${this.tableName} WHERE timestamp BETWEEN ? AND ?`, startOfMonth.toISOString(), endOfMonth.toISOString());
-  }
+    // Retrieve all records order by timestamp Desc
+    static async findAll() { 
+      return await this.database.sql(`SELECT * FROM ${this.tableName} ORDER BY timestamp DESC`); 
+    }
+  
+  
+    // Find incidents this week order by timestamp Desc
+    static async findThisWeek() {
+      const { startOfWeek, endOfWeek } = this.getWeekRange();
+      return await this.database.sql(`SELECT * FROM ${this.tableName} WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC`, startOfWeek.toISOString(), endOfWeek.toISOString());
+    }
+  
+    // Find incidents this month order by timestamp Desc
+    static async findThisMonth() {
+      const { startOfMonth, endOfMonth } = this.getMonthRange();
+      return await this.database.sql(`SELECT * FROM ${this.tableName} WHERE timestamp BETWEEN ? AND ? ORDER BY timestamp DESC`, startOfMonth.toISOString(), endOfMonth.toISOString());
+    }
+  
 
   // Helper function to get the start and end of the current week
   static getWeekRange() {

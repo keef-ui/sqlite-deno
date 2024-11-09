@@ -51,7 +51,7 @@ app.use(async (ctx, next) => {
   await next();
 });
 
-// Use static file middleware
+// Use static files and dynamic routes protection middleware
 app.use(protectedPathMiddleware);
 
 

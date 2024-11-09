@@ -1,7 +1,7 @@
 import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { uploadPromiseDenoCloudinary } from "../../cloudinary/uploadPromiseDenoCloudinary";
 import { Model_sqlite_cloud as Model } from "../../db/orm-core";
-import { router, db_connectionString, db_table } from "../jwttest";
+import { router, db_connectionString, db_table } from "../app";
 import { Model_sqlite_cloud as Modeltest } from "../../db/orm-test";
 
 

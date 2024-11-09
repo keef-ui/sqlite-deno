@@ -1,6 +1,6 @@
 import { Handlebars } from "https://deno.land/x/handlebars@v0.9.0/mod.ts";
 import { Model_sqlite_cloud as Model } from "../../db/orm-core";
-import { router, db_connectionString, db_table } from "../jwttest";
+import { router, db_connectionString, db_table } from "../app";
 
 
 
